@@ -1,0 +1,92 @@
+#
+# Stage: Composer install for production
+#
+FROM composer:1.8.4 AS composer
+
+COPY composer.json \
+    composer.lock \
+    symfony.lock \
+    ./
+
+RUN composer --no-interaction install --no-dev --ignore-platform-reqs --no-autoloader --no-suggest --prefer-dist
+
+COPY src/ src/
+
+RUN composer --no-interaction dump-autoload --classmap-authoritative
+
+
+
+#
+# Stage: Production environment
+#
+FROM php:7.3.2-fpm-alpine AS prod
+
+WORKDIR /app
+
+ENV APP_ENV=prod
+
+RUN mkdir data var && \
+    chown www-data:www-data var
+
+RUN docker-php-ext-install \
+    opcache
+
+COPY LICENSE .
+COPY .docker/php.ini ${PHP_INI_DIR}/conf.d/00-app.ini
+COPY bin/ bin/
+COPY src/ src/
+COPY public/ public/
+COPY config/ config/
+COPY --from=composer /app/vendor/ vendor/
+
+USER www-data
+HEALTHCHECK --interval=5s CMD sh -c 'nc -z localhost 9000'
+
+
+
+#
+# Stage: Composer install for development
+#
+FROM composer AS composer-dev
+
+RUN composer --no-interaction install --ignore-platform-reqs --no-suggest --prefer-dist
+
+
+
+#
+# Stage: Test environment
+#
+FROM prod AS test
+
+ENV APP_ENV=test
+
+USER root
+
+COPY --from=composer /usr/bin/composer /usr/bin/composer
+RUN touch .phpcs-cache .phpunit.result.cache && \
+    chown www-data:www-data .phpcs-cache .phpunit.result.cache
+COPY tests/ tests/
+COPY composer.json \
+    composer.lock \
+    phpcs.xml.dist \
+    phpstan.neon.dist \
+    phpunit.xml.dist \
+    symfony.lock \
+    ./
+COPY --from=composer-dev /app/vendor/ vendor/
+
+USER www-data
+
+
+
+#
+# Stage: Development environment
+#
+FROM test AS dev
+
+ENV APP_ENV=dev
+
+USER root
+ENV COMPOSER_ALLOW_SUPERUSER=true
+
+COPY .docker/php-dev.ini ${PHP_INI_DIR}/conf.d/01-app.ini

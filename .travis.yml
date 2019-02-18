@@ -1,0 +1,27 @@
+sudo: required
+
+language: minimal
+
+services: docker
+
+env:
+    global:
+        - APP_SECRET=secret
+
+install:
+    - travis_retry docker-compose --file docker-compose.yaml build
+    - travis_retry docker-compose --file docker-compose.yaml --file docker-compose.test.yaml build
+
+script:
+    - .travis/smoke-test.sh
+    - docker-compose --file docker-compose.yaml --file docker-compose.test.yaml run app composer validate --strict
+    - docker-compose --file docker-compose.yaml --file docker-compose.test.yaml run app composer check-platform-reqs
+    - docker-compose --file docker-compose.yaml --file docker-compose.test.yaml run app vendor/bin/phpunit
+    - docker-compose --file docker-compose.yaml --file docker-compose.test.yaml run app vendor/bin/phpcs -p
+    - docker-compose --file docker-compose.yaml --file docker-compose.test.yaml run -e APP_ENV=dev app sh -c "bin/console cache:warmup --no-optional-warmers && vendor/bin/phpstan analyse"
+
+if: |
+    branch = master OR \
+    branch =~ /^(?:[0-9]|[1-9][0-9]*)\.(?:[0-9]|[1-9][0-9]*)$/ OR \
+    tag IS present OR \
+    type = pull_request
