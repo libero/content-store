@@ -8,7 +8,7 @@ function finish {
 
 trap finish EXIT
 
-docker-compose --file docker-compose.yaml up --detach web
+docker-compose --file docker-compose.yaml up -d web
 
 .scripts/docker/wait-healthy.sh "${COMPOSE_PROJECT_NAME:-contentstore}_app_1"
 
