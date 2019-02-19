@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9baa32b31247163bb17ba44bdb3a4785",
+    "content-hash": "f8b2675513c844ccffa196f132a9d7ce",
     "packages": [
         {
             "name": "psr/cache",
@@ -1492,23 +1492,23 @@
         },
         {
             "name": "libero/coding-standard",
-            "version": "v0.3.1",
+            "version": "v0.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/libero/php-coding-standard.git",
-                "reference": "5565299d1084b752c6d2aab39e0e2b76d3f2fe93"
+                "reference": "0db1bcfa476391bdfe2f69027a62239be1fdc2f6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/libero/php-coding-standard/zipball/5565299d1084b752c6d2aab39e0e2b76d3f2fe93",
-                "reference": "5565299d1084b752c6d2aab39e0e2b76d3f2fe93",
+                "url": "https://api.github.com/repos/libero/php-coding-standard/zipball/0db1bcfa476391bdfe2f69027a62239be1fdc2f6",
+                "reference": "0db1bcfa476391bdfe2f69027a62239be1fdc2f6",
                 "shasum": ""
             },
             "require": {
                 "dealerdirect/phpcodesniffer-composer-installer": "^0.4 || ^0.5",
                 "php": "^7.2",
-                "slevomat/coding-standard": "^4.8",
-                "squizlabs/php_codesniffer": "^3.3.2"
+                "slevomat/coding-standard": "^5.0",
+                "squizlabs/php_codesniffer": "^3.4"
             },
             "require-dev": {
                 "ext-mbstring": "*",
@@ -1535,7 +1535,7 @@
                 "MIT"
             ],
             "description": "Libero PHP coding standard",
-            "time": "2019-01-07T15:10:15+00:00"
+            "time": "2019-02-19T09:51:33+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -3554,29 +3554,30 @@
         },
         {
             "name": "slevomat/coding-standard",
-            "version": "4.8.7",
+            "version": "5.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/slevomat/coding-standard.git",
-                "reference": "bff96313d8c7c2ba57a4edb13c1c141df8988c58"
+                "reference": "fdab228c1800db9e65a62dde306bfa856d98fcc3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/slevomat/coding-standard/zipball/bff96313d8c7c2ba57a4edb13c1c141df8988c58",
-                "reference": "bff96313d8c7c2ba57a4edb13c1c141df8988c58",
+                "url": "https://api.github.com/repos/slevomat/coding-standard/zipball/fdab228c1800db9e65a62dde306bfa856d98fcc3",
+                "reference": "fdab228c1800db9e65a62dde306bfa856d98fcc3",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.1",
+                "phpstan/phpdoc-parser": "^0.3.1",
                 "squizlabs/php_codesniffer": "^3.4.0"
             },
             "require-dev": {
                 "jakub-onderka/php-parallel-lint": "1.0.0",
                 "phing/phing": "2.16.1",
-                "phpstan/phpstan": "0.9.2",
-                "phpstan/phpstan-phpunit": "0.9.4",
-                "phpstan/phpstan-strict-rules": "0.9",
-                "phpunit/phpunit": "7.5.1"
+                "phpstan/phpstan": "0.11.1",
+                "phpstan/phpstan-phpunit": "0.11",
+                "phpstan/phpstan-strict-rules": "0.11",
+                "phpunit/phpunit": "8.0.0"
             },
             "type": "phpcodesniffer-standard",
             "autoload": {
@@ -3589,7 +3590,7 @@
                 "MIT"
             ],
             "description": "Slevomat Coding Standard for PHP_CodeSniffer complements Consistence Coding Standard by providing sniffs with additional checks.",
-            "time": "2019-01-03T13:15:50+00:00"
+            "time": "2019-02-03T20:31:35+00:00"
         },
         {
             "name": "squizlabs/php_codesniffer",
