@@ -1,5 +1,3 @@
-sudo: required
-
 language: minimal
 
 services: docker
@@ -7,6 +5,8 @@ services: docker
 env:
     global:
         - APP_SECRET=secret
+        - COMPOSE_PROJECT_NAME=contentstore
+        - IMAGE_TAG=$TRAVIS_COMMIT
 
 install:
     - travis_retry docker-compose --file docker-compose.yaml build
