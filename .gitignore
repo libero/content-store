@@ -13,9 +13,7 @@
 ###< squizlabs/php_codesniffer ###
 
 ###> symfony/framework-bundle ###
-/.env.local
-/.env.local.php
-/.env.*.local
+/.env
 /public/bundles/
 /var/
 /vendor/
