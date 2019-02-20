@@ -1,6 +1,8 @@
 Libero content store
 ====================
 
+[![Build Status](https://travis-ci.com/libero/content-store.svg?branch=master)](https://travis-ci.com/libero/content-store)
+
 Getting help
 ------------
 
