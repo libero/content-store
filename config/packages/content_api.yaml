@@ -1,0 +1,15 @@
+content_api:
+    services:
+        '%service_name%':
+            items: libero.content_store.items
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    libero.content_store.items:
+        class: Libero\ContentApiBundle\Adapter\FilesystemItems
+        arguments:
+            - '%kernel.data_dir%'

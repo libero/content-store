@@ -1,0 +1,2 @@
+parameters:
+    kernel.data_dir: '%env(ARTICLES_PATH)%'

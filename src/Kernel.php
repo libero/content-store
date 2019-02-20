@@ -46,8 +46,8 @@ final class Kernel extends BaseKernel
         $container->setParameter('container.dumper.inline_class_loader', true);
 
         $loader->load("{$this->getConfigDir()}/{packages}/*.yaml", 'glob');
-        $loader->load("{$this->getConfigDir()}/{packages}/{$this->environment}/**/*.yaml", 'glob');
         $loader->load("{$this->getConfigDir()}/{services}.yaml", 'glob');
+        $loader->load("{$this->getConfigDir()}/{packages}/{$this->environment}/**/*.yaml", 'glob');
     }
 
     protected function configureRoutes(RouteCollectionBuilder $routes) : void

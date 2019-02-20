@@ -8,11 +8,23 @@
     "doctrine/instantiator": {
         "version": "1.1.0"
     },
+    "fluentdom/fluentdom": {
+        "version": "7.1.0"
+    },
     "jean85/pretty-package-versions": {
         "version": "1.2"
     },
+    "libero/api-problem-bundle": {
+        "version": "v0.2.0"
+    },
     "libero/coding-standard": {
         "version": "v0.3.1"
+    },
+    "libero/content-api-bundle": {
+        "version": "v0.1.1"
+    },
+    "libero/ping-controller": {
+        "version": "v0.1.0"
     },
     "monolog/monolog": {
         "version": "1.24.0"
@@ -233,6 +245,15 @@
             "ref": "5374e24d508ba8fd6ba9eb15170255fdb778316a"
         }
     },
+    "symfony/translation": {
+        "version": "3.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "3.3",
+            "ref": "1fb02a6e1c8f3d4232cce485c9afa868d63b115a"
+        }
+    },
     "symfony/twig-bridge": {
         "version": "v4.2.3"
     },
@@ -265,6 +286,9 @@
     },
     "theseer/tokenizer": {
         "version": "1.1.0"
+    },
+    "thomasweinert/phpunit-xpath-assertions": {
+        "version": "2.0.0"
     },
     "twig/twig": {
         "version": "v2.6.2"

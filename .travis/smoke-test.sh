@@ -13,4 +13,6 @@ docker-compose --file docker-compose.yaml up -d web
 .scripts/docker/wait-healthy.sh "${COMPOSE_PROJECT_NAME:-contentstore}_app_1"
 
 docker-compose --file docker-compose.yaml exec app bin/console --version
-nc -z localhost 8080
+
+ping=$(curl -sS "http://localhost:8080/${SERVICE_NAME:-articles}/ping" 2>&1)
+[[ "$ping" == "pong" ]]

@@ -1,3 +1,8 @@
+parameters:
+    env(DEFAULT_LOCALE): 'en'
+    kernel.data_dir: '%kernel.project_dir%/data'
+    service_name: 'articles'
+
 services:
     _defaults:
         autowire: true
