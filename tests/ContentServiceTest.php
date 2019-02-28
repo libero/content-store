@@ -6,11 +6,8 @@ namespace tests\Libero\ContentStore;
 
 use FluentDOM;
 use PHPUnit\Xpath\Assert as XpathAssertions;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use function ob_get_clean;
-use function ob_start;
 
 /**
  * @backupGlobals enabled
@@ -66,11 +63,11 @@ final class ContentServiceTest extends KernelTestCase
     {
         self::bootKernel();
 
-        $response = $this->handle(Request::create('/articles/items/article1/versions/latest'), $content);
+        $response = $this->handle(Request::create('/articles/items/article1/versions/latest'));
 
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $this->assertSame('application/xml; charset=utf-8', $response->headers->get('Content-Type'));
-        $this->assertXmlStringEqualsXmlFile(self::ARTICLES_PATH.'/article1/2.xml', $content);
+        $this->assertXmlStringEqualsXmlFile(self::ARTICLES_PATH.'/article1/2.xml', $response->getContent());
     }
 
     /**
@@ -80,19 +77,10 @@ final class ContentServiceTest extends KernelTestCase
     {
         self::bootKernel();
 
-        $response = $this->handle(Request::create('/articles/items/article1/versions/1'), $content);
+        $response = $this->handle(Request::create('/articles/items/article1/versions/1'));
 
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $this->assertSame('application/xml; charset=utf-8', $response->headers->get('Content-Type'));
-        $this->assertXmlStringEqualsXmlFile(self::ARTICLES_PATH.'/article1/1.xml', $content);
-    }
-
-    private function handle(Request $request, &$content) : Response
-    {
-        ob_start();
-        $response = self::$kernel->handle($request);
-        $content = ob_get_clean();
-
-        return $response;
+        $this->assertXmlStringEqualsXmlFile(self::ARTICLES_PATH.'/article1/1.xml', $response->getContent());
     }
 }
