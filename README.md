@@ -10,7 +10,7 @@ Getting started
 
 To run a content store with the service prefix `articles`:
 
-1. Run `docker-compose down --v && docker-compose up --build`.
+1. Run `docker-compose down --volumes && docker-compose up --build`.
 
 2. Open http://localhost:8080/articles/items to see the list of items.
 
