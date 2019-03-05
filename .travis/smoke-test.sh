@@ -14,5 +14,5 @@ docker-compose --file docker-compose.yaml up -d web
 
 docker-compose --file docker-compose.yaml exec app bin/console --version
 
-ping=$(curl -sS "http://localhost:8080/${SERVICE_NAME:-articles}/ping" 2>&1)
+ping=$(curl -sS "http://localhost:8080/ping" 2>&1)
 [[ "$ping" == "pong" ]]
