@@ -8,6 +8,7 @@ services:
         environment:
             APP_SECRET:
             DEFAULT_LOCALE:
+            SERVICE_NAME:
         image: libero/content-store:${IMAGE_TAG:-master}
         volumes:
             - ./.docker/data:/app/data/

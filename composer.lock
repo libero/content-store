@@ -114,16 +114,16 @@
         },
         {
             "name": "libero/content-api-bundle",
-            "version": "v0.1.1",
+            "version": "v0.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/libero/content-api-bundle.git",
-                "reference": "d942c10f8be7a415605ea6a1b59a43cae97c0630"
+                "reference": "b90d1b7c3a7bb1ca1b10fc944f8e5d10400d6dee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/libero/content-api-bundle/zipball/d942c10f8be7a415605ea6a1b59a43cae97c0630",
-                "reference": "d942c10f8be7a415605ea6a1b59a43cae97c0630",
+                "url": "https://api.github.com/repos/libero/content-api-bundle/zipball/b90d1b7c3a7bb1ca1b10fc944f8e5d10400d6dee",
+                "reference": "b90d1b7c3a7bb1ca1b10fc944f8e5d10400d6dee",
                 "shasum": ""
             },
             "require": {
@@ -173,7 +173,7 @@
                 "MIT"
             ],
             "description": "Implements the Libero content API",
-            "time": "2018-12-14T11:43:22+00:00"
+            "time": "2019-03-04T13:10:14+00:00"
         },
         {
             "name": "libero/ping-controller",

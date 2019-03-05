@@ -33,7 +33,7 @@ final class ContentServiceTest extends KernelTestCase
     {
         self::bootKernel();
 
-        $response = self::$kernel->handle(Request::create('/articles/ping'));
+        $response = self::$kernel->handle(Request::create('/ping'));
 
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $this->assertSame('pong', $response->getContent());
@@ -46,7 +46,7 @@ final class ContentServiceTest extends KernelTestCase
     {
         self::bootKernel();
 
-        $response = self::$kernel->handle(Request::create('/articles/items'));
+        $response = self::$kernel->handle(Request::create('/items'));
 
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $this->assertSame('application/xml; charset=utf-8', $response->headers->get('Content-Type'));
@@ -63,7 +63,7 @@ final class ContentServiceTest extends KernelTestCase
     {
         self::bootKernel();
 
-        $response = $this->handle(Request::create('/articles/items/article1/versions/latest'));
+        $response = $this->handle(Request::create('/items/article1/versions/latest'));
 
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $this->assertSame('application/xml; charset=utf-8', $response->headers->get('Content-Type'));
@@ -77,7 +77,7 @@ final class ContentServiceTest extends KernelTestCase
     {
         self::bootKernel();
 
-        $response = $this->handle(Request::create('/articles/items/article1/versions/1'));
+        $response = $this->handle(Request::create('/items/article1/versions/1'));
 
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $this->assertSame('application/xml; charset=utf-8', $response->headers->get('Content-Type'));

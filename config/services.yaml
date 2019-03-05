@@ -1,7 +1,7 @@
 parameters:
     env(DEFAULT_LOCALE): 'en'
+    env(SERVICE_NAME): 'articles'
     kernel.data_dir: '%kernel.project_dir%/data'
-    service_name: 'articles'
 
 services:
     _defaults:
