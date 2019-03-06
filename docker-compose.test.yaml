@@ -4,3 +4,4 @@ services:
     app:
         build:
             target: test
+        image: libero/content-store_test:${IMAGE_TAG:-master}

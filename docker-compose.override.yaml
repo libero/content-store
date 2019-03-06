@@ -4,6 +4,7 @@ services:
     app:
         build:
             target: dev
+        image: libero/content-store_dev:${IMAGE_TAG:-master}
         volumes:
             - ./:/app
             - /app/var
