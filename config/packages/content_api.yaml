@@ -3,6 +3,7 @@ content_api:
         prefix: '%env(SERVICE_NAME)%'
         include_prefix: false
         items: libero.content_store.items
+        put-workflow: libero.content_store.put
 
 services:
     _defaults:

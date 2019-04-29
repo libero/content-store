@@ -83,4 +83,37 @@ final class ContentServiceTest extends KernelTestCase
         $this->assertSame('application/xml; charset=utf-8', $response->headers->get('Content-Type'));
         $this->assertXmlStringEqualsXmlFile(self::ARTICLES_PATH.'/article1/1.xml', $response->getContent());
     }
+
+    /**
+     * @test
+     */
+    public function it_adds_an_item() : void
+    {
+        self::bootKernel();
+
+        $request = Request::create(
+            '/items/new-article/versions/1',
+            'PUT',
+            [],
+            [],
+            [],
+            [],
+            $expected = <<<XML
+<item xmlns="http://libero.pub">
+    <meta>
+        <id>new-article</id>
+        <service>articles</service>
+    </meta>
+</item>
+XML
+        );
+
+        $response = $this->handle($request);
+
+        $this->assertSame(Response::HTTP_NO_CONTENT, $response->getStatusCode());
+
+        $response = $this->handle(Request::create('/items/new-article/versions/1'));
+
+        $this->assertXmlStringEqualsXmlString($expected, $response->getContent());
+    }
 }
