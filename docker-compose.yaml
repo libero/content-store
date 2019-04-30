@@ -18,7 +18,11 @@ services:
             - db
     db-schema:
         <<: *app
-        command: bin/console doctrine:migrations:migrate --no-interaction
+        command: >
+            sh -c '
+                while ! nc db 5432; do sleep 1; done
+                bin/console doctrine:migrations:migrate --no-interaction
+            '
     web:
         image: nginx:1.15.8-alpine
         volumes:
