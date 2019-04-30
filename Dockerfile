@@ -28,19 +28,17 @@ ENV APP_ENV=prod
 RUN mkdir var && \
     chown www-data:www-data var
 
-RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS && \
-    apk add --no-cache \
+RUN apk add --no-cache --virtual .build-deps \
         postgresql-dev \
-        postgresql-libs \
+    && \
+    apk add --no-cache \
+        libpq \
     && \
     docker-php-ext-install \
         opcache \
         pdo_pgsql \
     && \
-    apk del \
-        .build-deps \
-        postgresql-dev \
-    && \
+    apk del .build-deps && \
     rm -rf /var/cache/apk/
 
 COPY LICENSE .
