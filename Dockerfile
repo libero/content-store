@@ -12,7 +12,7 @@ RUN composer --no-interaction install --no-dev --ignore-platform-reqs --no-autol
 
 COPY src/ src/
 
-RUN composer --no-interaction dump-autoload --classmap-authoritative
+RUN composer --no-interaction dump-autoload --classmap-authoritative --no-dev
 
 
 
