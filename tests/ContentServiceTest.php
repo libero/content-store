@@ -53,8 +53,6 @@ final class ContentServiceTest extends KernelTestCase
 
         $dom = FluentDOM::load($response->getContent());
 
-        $this->markTestIncomplete('Fixtures are not loaded');
-
         $this->assertXpathCount(2, '/libero:item-list/libero:item-ref', $dom, ['libero' => 'http://libero.pub']);
     }
 
@@ -66,8 +64,6 @@ final class ContentServiceTest extends KernelTestCase
         self::bootKernel();
 
         $response = $this->handle(Request::create('/items/article1/versions/latest'));
-
-        $this->markTestIncomplete('Fixtures are not loaded');
 
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $this->assertSame('application/xml; charset=utf-8', $response->headers->get('Content-Type'));
@@ -82,8 +78,6 @@ final class ContentServiceTest extends KernelTestCase
         self::bootKernel();
 
         $response = $this->handle(Request::create('/items/article1/versions/1'));
-
-        $this->markTestIncomplete('Fixtures are not loaded');
 
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $this->assertSame('application/xml; charset=utf-8', $response->headers->get('Content-Type'));

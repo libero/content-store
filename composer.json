@@ -9,6 +9,9 @@
         }
     },
     "autoload-dev": {
+        "files": [
+            "tests/functions.php"
+        ],
         "psr-4": {
             "tests\\Libero\\ContentStore\\": "tests/"
         }
@@ -40,6 +43,7 @@
         "phpstan/phpstan-phpunit": "^0.11",
         "phpunit/phpunit": "^8.0",
         "symfony/debug": "^4.2",
+        "symfony/finder": "^4.2",
         "symfony/twig-bundle": "^4.2",
         "symfony/web-profiler-bundle": "^4.2",
         "thomasweinert/phpunit-xpath-assertions": "dev-master"

@@ -6,12 +6,23 @@ namespace tests\Libero\ContentStore;
 
 use Doctrine\DBAL\Connection;
 use Libero\ContentApiBundle\Adapter\DoctrineItems;
+use Libero\ContentApiBundle\Model\ItemId;
+use Libero\ContentApiBundle\Model\Items;
+use Libero\ContentApiBundle\Model\ItemVersion;
+use Libero\ContentApiBundle\Model\ItemVersionNumber;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase as BaseKernelTestCase;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use function array_map;
+use function basename;
+use function iterator_to_array;
+use function md5;
 use function ob_get_clean;
 use function ob_start;
+use function usort;
 
 abstract class KernelTestCase extends BaseKernelTestCase
 {
@@ -28,6 +39,8 @@ abstract class KernelTestCase extends BaseKernelTestCase
             $connection->exec($query);
         }
 
+        self::loadFixtures($items);
+
         return self::$kernel;
     }
 
@@ -42,5 +55,31 @@ abstract class KernelTestCase extends BaseKernelTestCase
         }
 
         return new Response($content, $response->getStatusCode(), $response->headers->all());
+    }
+
+    private static function loadFixtures(Items $items) : void
+    {
+        $fixtures = array_map(
+            function (SplFileInfo $fixture) : ItemVersion {
+                return new ItemVersion(
+                    ItemId::fromString(basename($fixture->getPath())),
+                    ItemVersionNumber::fromString($fixture->getBasename('.xml')),
+                    stream_from_string($fixture->getContents()),
+                    md5($fixture->getPathname())
+                );
+            },
+            iterator_to_array((new Finder())->files()->in(__DIR__.'/fixtures'))
+        );
+
+        usort(
+            $fixtures,
+            function (ItemVersion $a, ItemVersion $b) : int {
+                return $a->getVersion() <=> $b->getVersion();
+            }
+        );
+
+        foreach ($fixtures as $fixture) {
+            $items->add($fixture);
+        }
     }
 }
