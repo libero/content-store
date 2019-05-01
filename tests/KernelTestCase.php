@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use function array_map;
 use function basename;
+use function fopen;
 use function iterator_to_array;
 use function md5;
 use function ob_get_clean;
@@ -61,10 +62,13 @@ abstract class KernelTestCase extends BaseKernelTestCase
     {
         $fixtures = array_map(
             function (SplFileInfo $fixture) : ItemVersion {
+                /** @var resource $contents */
+                $contents = fopen($fixture->getPathname(), 'rb');
+
                 return new ItemVersion(
                     ItemId::fromString(basename($fixture->getPath())),
                     ItemVersionNumber::fromString($fixture->getBasename('.xml')),
-                    stream_from_string($fixture->getContents()),
+                    $contents,
                     md5($fixture->getPathname())
                 );
             },
