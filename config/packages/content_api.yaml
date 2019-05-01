@@ -12,6 +12,16 @@ services:
         public: false
 
     libero.content_store.items:
-        class: Libero\ContentApiBundle\Adapter\FilesystemItems
+        class: Libero\ContentApiBundle\Adapter\DoctrineItems
         arguments:
-            - '%kernel.data_dir%'
+            - '@doctrine.dbal.default_connection'
+            - 'items'
+
+    libero.content_store.items.schema:
+        class: Doctrine\DBAL\Schema\Schema
+        factory: 'libero.content_store.items:getSchema'
+
+    libero.content_store.items.schema_provider:
+        class: Doctrine\Migrations\Provider\StubSchemaProvider
+        arguments:
+            - '@libero.content_store.items.schema'
