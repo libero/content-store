@@ -7,11 +7,12 @@ namespace Libero\ContentStore;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Config\Resource\FileResource;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\Routing\RouteCollectionBuilder;
 
-final class Kernel extends BaseKernel
+final class Kernel extends BaseKernel implements CompilerPassInterface
 {
     use MicroKernelTrait;
 
@@ -38,6 +39,14 @@ final class Kernel extends BaseKernel
                 yield new $class();
             }
         }
+    }
+
+    public function process(ContainerBuilder $container) : void
+    {
+        $diffCommand = $container->findDefinition('doctrine_migrations.diff_command');
+        $schemaProvider = $container->findDefinition('libero.content_store.items.schema_provider');
+
+        $diffCommand->setArgument(0, $schemaProvider);
     }
 
     protected function configureContainer(ContainerBuilder $container, LoaderInterface $loader) : void

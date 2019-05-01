@@ -19,7 +19,7 @@
         "ext-mbstring": "*",
         "ext-pdo_pgsql": "*",
         "doctrine/doctrine-bundle": "^1.10",
-        "doctrine/doctrine-migrations-bundle": "dev-schema-provider",
+        "doctrine/doctrine-migrations-bundle": "^2.0",
         "libero/api-problem-bundle": "^0.2",
         "libero/content-api-bundle": "^0.1",
         "symfony/config": "^4.2",
@@ -57,11 +57,5 @@
         "symfony": {
             "allow-contrib": true
         }
-    },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/thewilkybarkid/DoctrineMigrationsBundle"
-        }
-    ]
+    }
 }

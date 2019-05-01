@@ -2,4 +2,3 @@ doctrine_migrations:
     dir_name: '%kernel.project_dir%/config/migrations'
     name: Libero Content Store migrations
     namespace: Libero\ContentStore\Migrations
-    schema_provider: libero.content_store.items.schema_provider

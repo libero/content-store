@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "69f330ce4dea432352803dd6b49b7ab5",
+    "content-hash": "47ff09d69629ba4b9ece9c462a5e15d9",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -479,16 +479,16 @@
         },
         {
             "name": "doctrine/doctrine-migrations-bundle",
-            "version": "dev-schema-provider",
+            "version": "v2.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/thewilkybarkid/DoctrineMigrationsBundle.git",
-                "reference": "722a56df530a00483514d3743c8fa9c245140066"
+                "url": "https://github.com/doctrine/DoctrineMigrationsBundle.git",
+                "reference": "4c9579e0e43df1fb3f0ca29b9c20871c824fac71"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thewilkybarkid/DoctrineMigrationsBundle/zipball/722a56df530a00483514d3743c8fa9c245140066",
-                "reference": "722a56df530a00483514d3743c8fa9c245140066",
+                "url": "https://api.github.com/repos/doctrine/DoctrineMigrationsBundle/zipball/4c9579e0e43df1fb3f0ca29b9c20871c824fac71",
+                "reference": "4c9579e0e43df1fb3f0ca29b9c20871c824fac71",
                 "shasum": ""
             },
             "require": {
@@ -513,44 +513,34 @@
             "autoload": {
                 "psr-4": {
                     "Doctrine\\Bundle\\MigrationsBundle\\": ""
-                },
-                "exclude-from-classmap": [
-                    "/Tests/"
-                ]
-            },
-            "autoload-dev": {
-                "psr-4": {
-                    "Doctrine\\Bundle\\MigrationsBundle\\Tests\\": "Tests"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "authors": [
                 {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
                 },
                 {
                     "name": "Doctrine Project",
                     "homepage": "http://www.doctrine-project.org"
                 },
                 {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
                 }
             ],
             "description": "Symfony DoctrineMigrationsBundle",
             "homepage": "https://www.doctrine-project.org",
             "keywords": [
-                "DBAL",
-                "Migrations",
-                "Schema"
+                "dbal",
+                "migrations",
+                "schema"
             ],
-            "support": {
-                "source": "https://github.com/thewilkybarkid/DoctrineMigrationsBundle/tree/schema-provider"
-            },
-            "time": "2019-04-30T08:43:50+00:00"
+            "time": "2019-01-09T18:49:50+00:00"
         },
         {
             "name": "doctrine/event-manager",
@@ -5995,7 +5985,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "doctrine/doctrine-migrations-bundle": 20,
         "thomasweinert/phpunit-xpath-assertions": 20
     },
     "prefer-stable": false,
