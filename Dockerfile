@@ -25,11 +25,21 @@ WORKDIR /app
 
 ENV APP_ENV=prod
 
-RUN mkdir data var && \
+RUN mkdir var && \
     chown www-data:www-data var
 
-RUN docker-php-ext-install \
-    opcache
+RUN apk add --no-cache --virtual .build-deps \
+        postgresql-dev \
+    && \
+    apk add --no-cache \
+        libpq \
+    && \
+    docker-php-ext-install \
+        opcache \
+        pdo_pgsql \
+    && \
+    apk del .build-deps && \
+    rm -rf /var/cache/apk/
 
 COPY LICENSE .
 COPY .docker/php.ini ${PHP_INI_DIR}/conf.d/00-app.ini

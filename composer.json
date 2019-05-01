@@ -17,6 +17,9 @@
         "php": "^7.3",
         "ext-ctype": "*",
         "ext-mbstring": "*",
+        "ext-pdo_pgsql": "*",
+        "doctrine/doctrine-bundle": "^1.10",
+        "doctrine/doctrine-migrations-bundle": "^2.0",
         "libero/api-problem-bundle": "^0.2",
         "libero/content-api-bundle": "^0.1",
         "symfony/config": "^4.2",
@@ -37,6 +40,7 @@
         "phpstan/phpstan-phpunit": "^0.11",
         "phpunit/phpunit": "^8.0",
         "symfony/debug": "^4.2",
+        "symfony/finder": "^4.2",
         "symfony/twig-bundle": "^4.2",
         "symfony/web-profiler-bundle": "^4.2",
         "thomasweinert/phpunit-xpath-assertions": "dev-master"
