@@ -4,7 +4,6 @@ services:
     db:
         image: postgres:11.2-alpine
     app:
-        &app
         build:
             context: .
             target: prod
@@ -13,16 +12,15 @@ services:
             DEFAULT_LOCALE:
             SERVICE_NAME:
             DATABASE_URL: pgsql://postgres:@db:5432/postgres
-        image: libero/content-store:${IMAGE_TAG:-master}
-        depends_on:
-            - db
-    db-schema:
-        <<: *app
         command: >
             sh -c '
                 while ! nc db 5432; do sleep 1; done
                 bin/console doctrine:migrations:migrate --no-interaction
+                php-fpm
             '
+        image: libero/content-store:${IMAGE_TAG:-master}
+        depends_on:
+            - db
     web:
         image: nginx:1.15.8-alpine
         volumes:
