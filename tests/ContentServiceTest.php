@@ -9,22 +9,11 @@ use PHPUnit\Xpath\Assert as XpathAssertions;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * @backupGlobals enabled
- */
 final class ContentServiceTest extends KernelTestCase
 {
     private const ARTICLES_PATH = __DIR__.'/fixtures';
 
     use XpathAssertions;
-
-    /**
-     * @before
-     */
-    public function setUpFixtures() : void
-    {
-        $_SERVER['ARTICLES_PATH'] = self::ARTICLES_PATH;
-    }
 
     /**
      * @test
@@ -115,5 +104,34 @@ XML
         $response = $this->handle(Request::create('/items/new-article/versions/1'));
 
         $this->assertXmlStringEqualsXmlString($expected, $response->getContent());
+    }
+
+    /**
+     * @test
+     */
+    public function it_validates_items() : void
+    {
+        self::bootKernel();
+
+        $request = Request::create(
+            '/items/new-article/versions/1',
+            'PUT',
+            [],
+            [],
+            [],
+            [],
+            <<<XML
+<item xmlns="http://libero.pub">
+    <meta>
+        <id>new-article</id>
+        <service>not-articles</service>
+    </meta>
+</item>
+XML
+        );
+
+        $response = $this->handle($request);
+
+        $this->assertSame(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
     }
 }
