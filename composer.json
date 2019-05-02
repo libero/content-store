@@ -32,6 +32,7 @@
         "symfony/monolog-bundle": "^3.3",
         "symfony/routing": "^4.2",
         "symfony/translation": "^4.2",
+        "symfony/workflow": "^4.2",
         "symfony/yaml": "^4.2"
     },
     "require-dev": {
@@ -41,6 +42,7 @@
         "phpunit/phpunit": "^8.0",
         "symfony/debug": "^4.2",
         "symfony/finder": "^4.2",
+        "symfony/stopwatch": "^4.2",
         "symfony/twig-bundle": "^4.2",
         "symfony/web-profiler-bundle": "^4.2",
         "thomasweinert/phpunit-xpath-assertions": "dev-master"

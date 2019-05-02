@@ -1,0 +1,25 @@
+framework:
+    workflows:
+        libero.content_store.put:
+            type: workflow
+            marking_store:
+                type: single_state
+                arguments:
+                    - state
+            supports:
+                - Libero\ContentApiBundle\Model\PutTask
+            places:
+                - start
+                - needs_validation
+                - validated
+                - end
+            transitions:
+                start:
+                    from: start
+                    to: needs_validation
+                validate:
+                    from: needs_validation
+                    to: validated
+                end:
+                    from: validated
+                    to: end

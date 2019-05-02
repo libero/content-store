@@ -9,22 +9,11 @@ use PHPUnit\Xpath\Assert as XpathAssertions;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * @backupGlobals enabled
- */
 final class ContentServiceTest extends KernelTestCase
 {
     private const ARTICLES_PATH = __DIR__.'/fixtures';
 
     use XpathAssertions;
-
-    /**
-     * @before
-     */
-    public function setUpFixtures() : void
-    {
-        $_SERVER['ARTICLES_PATH'] = self::ARTICLES_PATH;
-    }
 
     /**
      * @test
@@ -82,5 +71,67 @@ final class ContentServiceTest extends KernelTestCase
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $this->assertSame('application/xml; charset=utf-8', $response->headers->get('Content-Type'));
         $this->assertXmlStringEqualsXmlFile(self::ARTICLES_PATH.'/article1/1.xml', $response->getContent());
+    }
+
+    /**
+     * @test
+     */
+    public function it_adds_an_item() : void
+    {
+        self::bootKernel();
+
+        $request = Request::create(
+            '/items/new-article/versions/1',
+            'PUT',
+            [],
+            [],
+            [],
+            [],
+            $expected = <<<XML
+<item xmlns="http://libero.pub">
+    <meta>
+        <id>new-article</id>
+        <service>articles</service>
+    </meta>
+</item>
+XML
+        );
+
+        $response = $this->handle($request);
+
+        $this->assertSame(Response::HTTP_NO_CONTENT, $response->getStatusCode());
+
+        $response = $this->handle(Request::create('/items/new-article/versions/1'));
+
+        $this->assertXmlStringEqualsXmlString($expected, $response->getContent());
+    }
+
+    /**
+     * @test
+     */
+    public function it_validates_items() : void
+    {
+        self::bootKernel();
+
+        $request = Request::create(
+            '/items/new-article/versions/1',
+            'PUT',
+            [],
+            [],
+            [],
+            [],
+            <<<XML
+<item xmlns="http://libero.pub">
+    <meta>
+        <id>new-article</id>
+        <service>not-articles</service>
+    </meta>
+</item>
+XML
+        );
+
+        $response = $this->handle($request);
+
+        $this->assertSame(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
     }
 }
