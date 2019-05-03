@@ -1,4 +1,4 @@
 oneup_flysystem:
     adapters:
-        default_adapter:
+        assets_adapter:
             memory:

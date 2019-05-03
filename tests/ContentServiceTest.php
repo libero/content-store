@@ -161,7 +161,8 @@ XML
             $response->getContent()
         );
 
-        $flysystem = self::$container->get(FilesystemInterface::class);
+        /** @var FilesystemInterface $flysystem */
+        $flysystem = self::$container->get('oneup_flysystem.assets_filesystem');
         $this->assertTrue($flysystem->has('new-article/v1/879f77a11b0649cb8af511fa5d6e4a7e.jpeg'));
         $this->assertSame('figure1', $flysystem->read('new-article/v1/879f77a11b0649cb8af511fa5d6e4a7e.jpeg'));
     }

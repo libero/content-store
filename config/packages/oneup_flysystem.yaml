@@ -1,11 +1,10 @@
 oneup_flysystem:
     adapters:
-        default_adapter:
+        assets_adapter:
             local:
                 directory: '%env(ASSETS_PATH)%'
     filesystems:
-        default_filesystem:
-            adapter: default_adapter
-            alias: League\Flysystem\FilesystemInterface
+        assets:
+            adapter: assets_adapter
             plugins:
                 - Libero\ContentStore\Flysystem\HttpUrlPlugin

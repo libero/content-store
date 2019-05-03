@@ -15,3 +15,7 @@ services:
     Libero\ContentStore\Flysystem\HttpUrlPlugin:
         arguments:
             - '%env(ASSETS_URI)%'
+
+    Libero\ContentStore\Workflow\MoveJatsAssets:
+        arguments:
+            - '@oneup_flysystem.assets_filesystem'
