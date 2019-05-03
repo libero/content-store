@@ -1,0 +1,10 @@
+oneup_flysystem:
+    adapters:
+        default_adapter:
+            local:
+                directory: "@=service('virtual_filesystem.flysystem').root().url()"
+
+services:
+
+    virtual_filesystem.flysystem:
+        class: VirtualFileSystem\FileSystem
