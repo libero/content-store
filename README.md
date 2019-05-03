@@ -3,7 +3,7 @@ Libero content store
 
 [![Build Status](https://travis-ci.com/libero/content-store.svg?branch=master)](https://travis-ci.com/libero/content-store)
 
-Implementation of the Libero content API using PostgreSQL.
+Implementation of the Libero content API using PostgreSQL and Amazon S3.
 
 Getting started
 ---------------

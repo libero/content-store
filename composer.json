@@ -25,6 +25,7 @@
         "guzzlehttp/guzzle": "^6.3",
         "guzzlehttp/psr7": "^1.5",
         "league/flysystem": "^1.0",
+        "league/flysystem-aws-s3-v3": "^1.0",
         "libero/api-problem-bundle": "^0.2",
         "libero/content-api-bundle": "^0.1",
         "oneup/flysystem-bundle": "^3.1",
