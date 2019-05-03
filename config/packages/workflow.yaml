@@ -11,7 +11,7 @@ framework:
             places:
                 - start
                 - needs_validation
-                - validated
+                - needs_manipulation
                 - end
             transitions:
                 start:
@@ -19,7 +19,7 @@ framework:
                     to: needs_validation
                 validate:
                     from: needs_validation
-                    to: validated
-                end:
-                    from: validated
+                    to: needs_manipulation
+                manipulate:
+                    from: needs_manipulation
                     to: end

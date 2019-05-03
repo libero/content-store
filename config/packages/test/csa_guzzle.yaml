@@ -1,0 +1,13 @@
+parameters:
+    libero.api_url: 'http://localhost'
+
+csa_guzzle:
+    mock:
+        mode: replay
+        request_headers_blacklist: ['User-Agent']
+        storage_path: "@=service('virtual_filesystem.guzzle_mock').root().url()"
+
+services:
+
+    virtual_filesystem.guzzle_mock:
+        class: VirtualFileSystem\FileSystem

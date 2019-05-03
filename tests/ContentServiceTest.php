@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace tests\Libero\ContentStore;
 
 use FluentDOM;
+use GuzzleHttp\Psr7\Request as Psr7Request;
+use GuzzleHttp\Psr7\Response as Psr7Response;
 use PHPUnit\Xpath\Assert as XpathAssertions;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -80,6 +82,11 @@ final class ContentServiceTest extends KernelTestCase
     {
         self::bootKernel();
 
+        self::mockApiResponse(
+            new Psr7Request('GET', 'https://www.example.com/new-article/assets/figure1.jpg'),
+            new Psr7Response(Response::HTTP_OK, ['Content-Type' => 'image/jpeg'], 'figure1')
+        );
+
         $request = Request::create(
             '/items/new-article/versions/1',
             'PUT',
@@ -87,12 +94,30 @@ final class ContentServiceTest extends KernelTestCase
             [],
             [],
             [],
-            $expected = <<<XML
+            <<<XML
 <item xmlns="http://libero.pub">
     <meta>
         <id>new-article</id>
         <service>articles</service>
     </meta>
+    <article xmlns="http://jats.nlm.nih.gov" xmlns:xlink="http://www.w3.org/1999/xlink"
+        xml:base="https://www.example.com/new-article/">
+        <front>
+            <article-meta>
+                <title-group>
+                    <article-title>Article title</article-title>
+                </title-group>
+            </article-meta>
+        </front>
+        <body>
+            <sec>
+                <title>Introduction</title>
+                <fig>
+                    <graphic xlink:href="assets/figure1.jpg"/>
+                </fig>
+            </sec>
+        </body>
+    </article>
 </item>
 XML
         );
@@ -103,7 +128,37 @@ XML
 
         $response = $this->handle(Request::create('/items/new-article/versions/1'));
 
-        $this->assertXmlStringEqualsXmlString($expected, $response->getContent());
+        $this->assertXmlStringEqualsXmlString(
+            <<<XML
+<item xmlns="http://libero.pub">
+    <meta>
+        <id>new-article</id>
+        <service>articles</service>
+    </meta>
+    <article xmlns="http://jats.nlm.nih.gov" xmlns:xlink="http://www.w3.org/1999/xlink"
+        xml:base="https://www.example.com/new-article/">
+        <front>
+            <article-meta>
+                <title-group>
+                    <article-title>Article title</article-title>
+                </title-group>
+            </article-meta>
+        </front>
+        <body>
+            <sec>
+                <title>Introduction</title>
+                <fig>
+                    <graphic mimetype="image" sub-mimetype="jpeg"
+                        xlink:href="http://assets/path/new-article/v1/879f77a11b0649cb8af511fa5d6e4a7e.jpeg"/>
+                </fig>
+            </sec>
+        </body>
+    </article>
+</item>
+XML
+            ,
+            $response->getContent()
+        );
     }
 
     /**

@@ -11,3 +11,7 @@ services:
     Libero\ContentStore\:
         resource: '../src/*'
         exclude: '../src/{Kernel.php}'
+
+    Libero\ContentStore\Flysystem\HttpUrlPlugin:
+        arguments:
+            - '%env(ASSETS_URI)%'

@@ -8,4 +8,5 @@ services:
         volumes:
             - ./:/app
             - /app/var
+            - assets:/app/var/assets/
             - /app/vendor
