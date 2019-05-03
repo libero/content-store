@@ -7,6 +7,7 @@ namespace tests\Libero\ContentStore;
 use FluentDOM;
 use GuzzleHttp\Psr7\Request as Psr7Request;
 use GuzzleHttp\Psr7\Response as Psr7Response;
+use League\Flysystem\FilesystemInterface;
 use PHPUnit\Xpath\Assert as XpathAssertions;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -159,6 +160,10 @@ XML
             ,
             $response->getContent()
         );
+
+        $flysystem = self::$container->get(FilesystemInterface::class);
+        $this->assertTrue($flysystem->has('new-article/v1/879f77a11b0649cb8af511fa5d6e4a7e.jpeg'));
+        $this->assertSame('figure1', $flysystem->read('new-article/v1/879f77a11b0649cb8af511fa5d6e4a7e.jpeg'));
     }
 
     /**

@@ -104,6 +104,9 @@
     "league/flysystem": {
         "version": "1.0.51"
     },
+    "league/flysystem-memory": {
+        "version": "1.0.1"
+    },
     "libero/api-problem-bundle": {
         "version": "v0.2.0"
     },
