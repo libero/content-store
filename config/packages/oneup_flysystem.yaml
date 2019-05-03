@@ -7,4 +7,11 @@ oneup_flysystem:
         assets:
             adapter: assets_adapter
             plugins:
-                - Libero\ContentStore\Flysystem\HttpUrlPlugin
+                - oneup_flysystem.assets_filesystem.plugin.http_url
+
+services:
+
+    oneup_flysystem.assets_filesystem.plugin.http_url:
+        class: Libero\ContentStore\Flysystem\HttpUrlPlugin
+        arguments:
+            - '%env(ASSETS_URI)%'
