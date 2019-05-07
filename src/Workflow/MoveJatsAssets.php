@@ -25,15 +25,27 @@ use function in_array;
 use function is_callable;
 use function is_resource;
 use function Libero\ContentApiBundle\stream_hash;
+use function preg_match;
 use function sprintf;
 
 final class MoveJatsAssets implements EventSubscriberInterface
 {
+    private const HAS_MIMETYPE_ATTRIBUTE = [
+        'graphic',
+        'inline-graphic',
+        'inline-media',
+        'inline-supplementary-material',
+        'media',
+        'supplementary-material',
+    ];
+
     private $client;
     private $filesystem;
+    private $origin;
 
-    public function __construct(FilesystemInterface $filesystem, ClientInterface $client)
+    public function __construct(string $origin, FilesystemInterface $filesystem, ClientInterface $client)
     {
+        $this->origin = $origin;
         $this->filesystem = $filesystem;
         $this->client = $client;
 
@@ -59,7 +71,7 @@ final class MoveJatsAssets implements EventSubscriberInterface
         $document->registerNamespace('xlink', 'http://www.w3.org/1999/xlink');
 
         /** @var array<Element> $assets */
-        $assets = $document('(//jats:graphic|//jats:inline-graphic)[@xlink:href]');
+        $assets = $document('//jats:article//jats:*[@xlink:href]');
 
         $promises = [];
 
@@ -70,8 +82,8 @@ final class MoveJatsAssets implements EventSubscriberInterface
                 $uri = UriResolver::resolve(uri_for($asset->baseURI), $uri);
             }
 
-            if (!in_array($uri->getScheme(), ['http', 'https'], true)) {
-                throw new UnexpectedValueException('Not an absolute HTTP path');
+            if (!$uri->getScheme() || 0 === preg_match($this->origin, (string) $uri)) {
+                continue;
             }
 
             $promises[] = $this->client
@@ -110,8 +122,11 @@ final class MoveJatsAssets implements EventSubscriberInterface
                         );
 
                         $asset->setAttribute('xlink:href', $this->filesystem->getHttpUrl($path));
-                        $asset->setAttribute('mimetype', $contentType[0]);
-                        $asset->setAttribute('sub-mimetype', $contentType[1]);
+
+                        if (in_array($asset->localName, self::HAS_MIMETYPE_ATTRIBUTE, true)) {
+                            $asset->setAttribute('mimetype', $contentType[0]);
+                            $asset->setAttribute('sub-mimetype', $contentType[1]);
+                        }
                     }
                 );
         }

@@ -1,4 +1,5 @@
 parameters:
+    env(ASSETS_ORIGIN): '~.+~'
     env(DEFAULT_LOCALE): 'en'
     env(SERVICE_NAME): 'articles'
 
@@ -14,4 +15,5 @@ services:
 
     Libero\ContentStore\Workflow\MoveJatsAssets:
         arguments:
+            - '%env(ASSETS_ORIGIN)%'
             - '@oneup_flysystem.assets_filesystem'
