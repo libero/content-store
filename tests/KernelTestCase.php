@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace tests\Libero\ContentStore;
 
-use Doctrine\DBAL\Connection;
-use Libero\ContentApiBundle\Adapter\DoctrineItems;
 use Libero\ContentApiBundle\Model\ItemId;
 use Libero\ContentApiBundle\Model\Items;
 use Libero\ContentApiBundle\Model\ItemVersion;
@@ -31,9 +29,7 @@ abstract class KernelTestCase extends BaseKernelTestCase
     {
         parent::bootKernel($options);
 
-        /** @var Connection $connection */
         $connection = self::$container->get('doctrine.dbal.default_connection');
-        /** @var DoctrineItems $items */
         $items = self::$container->get('libero.content_store.items');
 
         foreach ($items->getSchema()->toSql($connection->getDatabasePlatform()) as $query) {
