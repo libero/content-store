@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "62a16a0c0d417e1b3d83c9840bf51b09",
+    "content-hash": "ce84fe86376cfe932efbac8cadb31e7a",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -5259,56 +5259,6 @@
             "time": "2018-07-08T19:19:57+00:00"
         },
         {
-            "name": "php-vfs/php-vfs",
-            "version": "v1.4.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/michael-donat/php-vfs.git",
-                "reference": "1254b67ca6bdaccd9f305b0e1aea81f790b3fa67"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/michael-donat/php-vfs/zipball/1254b67ca6bdaccd9f305b0e1aea81f790b3fa67",
-                "reference": "1254b67ca6bdaccd9f305b0e1aea81f790b3fa67",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.4.0"
-            },
-            "require-dev": {
-                "doctrine/instantiator": "~1.0.2",
-                "phpunit/phpunit": "^6.5",
-                "sami/sami": "*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "VirtualFileSystem": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-3.0+"
-            ],
-            "authors": [
-                {
-                    "name": "Michael Donat",
-                    "email": "michael.donat@me.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Virtual file system implementation for use with PHP unit testing.",
-            "homepage": "http://michael-donat.github.com/php-vfs",
-            "keywords": [
-                "filesystem",
-                "php",
-                "testing",
-                "unit",
-                "virtual"
-            ],
-            "time": "2017-12-20T16:11:12+00:00"
-        },
-        {
             "name": "phpdocumentor/reflection-common",
             "version": "1.0.1",
             "source": {
@@ -7190,6 +7140,87 @@
             ],
             "description": "Xpath assertions and constraints for PHPUnit",
             "time": "2019-02-21T16:23:09+00:00"
+        },
+        {
+            "name": "twistor/flysystem-stream-wrapper",
+            "version": "v1.0.9",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/twistor/flysystem-stream-wrapper.git",
+                "reference": "c97389f188a6493759389861f9fc732652460c58"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/twistor/flysystem-stream-wrapper/zipball/c97389f188a6493759389861f9fc732652460c58",
+                "reference": "c97389f188a6493759389861f9fc732652460c58",
+                "shasum": ""
+            },
+            "require": {
+                "league/flysystem": "^1.0.9",
+                "twistor/stream-util": "~1.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.8"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Twistor\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Chris Leppanen",
+                    "email": "chris.leppanen@gmail.com"
+                }
+            ],
+            "description": "Adapts Flysystem filesystems to PHP stream wrappers.",
+            "homepage": "http://github.com/twistor/flysystem-stream-wrapper",
+            "time": "2018-11-14T06:41:03+00:00"
+        },
+        {
+            "name": "twistor/stream-util",
+            "version": "v1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/twistor/stream-util.git",
+                "reference": "226e74e6234508a53639b960c4a2752aee61799a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/twistor/stream-util/zipball/226e74e6234508a53639b960c4a2752aee61799a",
+                "reference": "226e74e6234508a53639b960c4a2752aee61799a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Twistor\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Chris Leppanen",
+                    "email": "chris.leppanen@gmail.com"
+                }
+            ],
+            "description": "Helper utilities for dealing with streams.",
+            "homepage": "http://github.com/twistor/stream-util",
+            "time": "2015-06-12T11:33:28+00:00"
         },
         {
             "name": "webmozart/assert",

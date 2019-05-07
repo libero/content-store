@@ -2,3 +2,9 @@ oneup_flysystem:
     adapters:
         assets_adapter:
             memory:
+        guzzle_cache_adapter:
+            memory:
+    filesystems:
+        guzzle_cache:
+            adapter: guzzle_cache_adapter
+            stream_wrapper: guzzle-cache

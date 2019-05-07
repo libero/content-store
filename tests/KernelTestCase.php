@@ -60,7 +60,7 @@ abstract class KernelTestCase extends BaseKernelTestCase
     final protected static function mockApiResponse(RequestInterface $request, ResponseInterface $response) : void
     {
         /** @var MockStorageAdapter $mock */
-        $mock = static::$container->get(MockStorageAdapter::class);
+        $mock = static::$container->get('csa_guzzle.mock.storage');
 
         $mock->save($request, $response);
     }
