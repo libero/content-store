@@ -1,8 +1,6 @@
 parameters:
     ignoreErrors:
-        - message: '~^Service ".+?" is private\.$~'
-          path: %currentWorkingDirectory%/tests/
-        - message: '~^Service ".+?" is not registered in the container\.$~'
+        - message: '~^Service ".+?" is (not registered in the container|private)\.$~'
           path: %currentWorkingDirectory%/tests/
     level: max
     paths:
