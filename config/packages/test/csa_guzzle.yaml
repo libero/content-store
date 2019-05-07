@@ -1,13 +1,22 @@
 parameters:
     libero.api_url: 'http://localhost'
 
-csa_guzzle:
-    mock:
-        mode: replay
-        request_headers_blacklist: ['User-Agent']
-        storage_path: "@=service('virtual_filesystem.guzzle_mock').root().url()"
-
 services:
 
     virtual_filesystem.guzzle_mock:
         class: VirtualFileSystem\FileSystem
+
+    Csa\GuzzleHttp\Middleware\Cache\Adapter\MockStorageAdapter:
+        arguments:
+            - "@=service('virtual_filesystem.guzzle_mock').root().url()"
+            - ['User-Agent']
+
+    Csa\GuzzleHttp\Middleware\Cache\MockMiddleware:
+        arguments:
+            - '@Csa\GuzzleHttp\Middleware\Cache\Adapter\MockStorageAdapter'
+            - 'replay'
+            - '%kernel.debug%'
+        tags:
+            - name: csa_guzzle.middleware
+              alias: mock
+              priority: -1250
