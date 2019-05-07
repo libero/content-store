@@ -17,14 +17,15 @@ services:
         environment:
             S3_KEY: *S3Key
             S3_SECRET: *S3Secret
+            S3_REGION: *S3Region
             S3_BUCKET: &S3Bucket bucket
         entrypoint: sh
         command: >
-            -c '
+            -ce '
                 while ! nc s3 9000; do sleep 1; done
-                /usr/bin/mc config host add minio http://s3:9000 $${S3_KEY} $${S3_SECRET};
-                /usr/bin/mc mb minio/$${S3_BUCKET};
-                /usr/bin/mc policy download minio/bucket;
+                /usr/bin/mc config host add minio http://s3:9000 $${S3_KEY} $${S3_SECRET}
+                /usr/bin/mc mb minio/$${S3_BUCKET} --region $${S3_REGION}
+                /usr/bin/mc policy download minio/bucket
             '
         depends_on:
             - s3
