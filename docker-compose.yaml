@@ -13,11 +13,14 @@ services:
             - 8081:9000
     s3-bucket:
         image: minio/mc:RELEASE.2019-05-01T23-27-44Z
+        environment:
+            S3_KEY: *S3Key
+            S3_SECRET: *S3Secret
         entrypoint: sh
         command: >
             -c '
                 while ! nc s3 9000; do sleep 1; done
-                /usr/bin/mc config host add minio http://s3:9000 AKIAIOSFODNN7EXAMPLE wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY;
+                /usr/bin/mc config host add minio http://s3:9000 $${S3_KEY} $${S3_SECRET};
                 /usr/bin/mc mb minio/bucket;
                 /usr/bin/mc policy download minio/bucket;
             '
