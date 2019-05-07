@@ -7,6 +7,7 @@ namespace tests\Libero\ContentStore;
 use FluentDOM;
 use GuzzleHttp\Psr7\Request as Psr7Request;
 use GuzzleHttp\Psr7\Response as Psr7Response;
+use League\Flysystem\AdapterInterface;
 use League\Flysystem\FilesystemInterface;
 use PHPUnit\Xpath\Assert as XpathAssertions;
 use Symfony\Component\HttpFoundation\Request;
@@ -85,7 +86,7 @@ final class ContentServiceTest extends KernelTestCase
 
         self::mockApiResponse(
             new Psr7Request('GET', 'https://www.example.com/new-article/assets/figure1.jpg'),
-            new Psr7Response(Response::HTTP_OK, ['Content-Type' => 'image/jpeg'], 'figure1')
+            new Psr7Response(Response::HTTP_OK, ['Content-Type' => 'image/jpeg;foo=bar'], 'figure1')
         );
 
         $request = Request::create(
@@ -165,6 +166,14 @@ XML
         $flysystem = self::$container->get('oneup_flysystem.assets_filesystem');
         $this->assertTrue($flysystem->has('new-article/v1/879f77a11b0649cb8af511fa5d6e4a7e.jpeg'));
         $this->assertSame('figure1', $flysystem->read('new-article/v1/879f77a11b0649cb8af511fa5d6e4a7e.jpeg'));
+        $this->assertSame(
+            AdapterInterface::VISIBILITY_PUBLIC,
+            $flysystem->getVisibility('new-article/v1/879f77a11b0649cb8af511fa5d6e4a7e.jpeg')
+        );
+        $this->assertSame(
+            'image/jpeg',
+            $flysystem->getMimetype('new-article/v1/879f77a11b0649cb8af511fa5d6e4a7e.jpeg')
+        );
     }
 
     /**

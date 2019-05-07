@@ -8,6 +8,7 @@ use FluentDOM\DOM\Element;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\UriResolver;
 use InvalidArgumentException;
+use League\Flysystem\AdapterInterface;
 use League\Flysystem\FilesystemInterface;
 use Libero\ContentApiBundle\Model\PutTask;
 use Psr\Http\Message\ResponseInterface;
@@ -77,7 +78,7 @@ final class MoveJatsAssets implements EventSubscriberInterface
                 ->requestAsync('GET', $uri, ['http_errors' => true])
                 ->then(
                     function (ResponseInterface $response) use ($asset, $task) {
-                        $contentType = explode(';', $response->getHeaderLine('Content-Type'), 1)[0] ?? '';
+                        $contentType = explode(';', $response->getHeaderLine('Content-Type'), 2)[0] ?? '';
                         $contentType = explode('/', $contentType, 2);
 
                         if (2 !== count($contentType)) {
@@ -99,7 +100,14 @@ final class MoveJatsAssets implements EventSubscriberInterface
                             $path .= ".{$extension}";
                         }
 
-                        $this->filesystem->putStream($path, $stream);
+                        $this->filesystem->putStream(
+                            $path,
+                            $stream,
+                            [
+                                'mimetype' => implode('/', $contentType),
+                                'visibility' => AdapterInterface::VISIBILITY_PUBLIC,
+                            ]
+                        );
 
                         $asset->setAttribute('xlink:href', $this->filesystem->getHttpUrl($path));
                         $asset->setAttribute('mimetype', $contentType[0]);
