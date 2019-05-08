@@ -1,2 +1,0 @@
-parameters:
-    env(ASSETS_URI): 'http://assets/path/'
