@@ -64,7 +64,7 @@ final class MoveJatsAssetsTest extends TestCase
     {
         $this->filesystem = new Filesystem(new MemoryAdapter());
         $this->filesystem->addPlugin($plugin = new PublicUrlPlugin());
-        $plugin->addAdapter(MemoryAdapter::class, LocalUrlAdapter::class, ['http://assets/path']);
+        $plugin->addAdapter(MemoryAdapter::class, LocalUrlAdapter::class, ['http://public-assets/path']);
     }
 
     /**
@@ -80,7 +80,7 @@ final class MoveJatsAssetsTest extends TestCase
      */
     public function it_does_nothing_if_it_is_not_jats() : void
     {
-        $mover = new MoveJatsAssets('~^http://example.com/assets/~', $this->filesystem, $this->client);
+        $mover = new MoveJatsAssets('~.+~', $this->filesystem, $this->client);
 
         $document = FluentDOM::load('<item xmlns="http://libero.pub"/>');
 
@@ -105,7 +105,7 @@ final class MoveJatsAssetsTest extends TestCase
 
         $document = FluentDOM::load(
             <<<XML
-<item xmlns="http://libero.pub" xml:base="http://www.example.com/">
+<item xmlns="http://libero.pub" xml:base="http://origin-assets/">
     <article xmlns="http://jats.nlm.nih.gov" xmlns:xlink="http://www.w3.org/1999/xlink">
         <front>
             <article-meta>
@@ -131,7 +131,7 @@ final class MoveJatsAssetsTest extends TestCase
                     </media>
                     <graphic xlink:href="/assets/figure2.pdf"/>
                     <alternatives>
-                        <graphic xlink:href="http://www.example.com/assets/figure2.jpg"/>
+                        <graphic xlink:href="http://origin-assets/assets/figure2.jpg"/>
                     </alternatives>
                 </fig>
             </sec>
@@ -148,70 +148,72 @@ XML
         $event = new Event($task, $marking, $transition);
 
         $this->mock->save(
-            new Request('GET', 'http://www.example.com/assets/article.pdf'),
+            new Request('GET', 'http://origin-assets/assets/article.pdf'),
             new Response(200, ['Content-Type' => 'application/pdf'], 'article pdf')
         );
 
         $this->mock->save(
-            new Request('GET', 'http://www.example.com/assets/figure1.jpg'),
+            new Request('GET', 'http://origin-assets/assets/figure1.jpg'),
             new Response(200, ['Content-Type' => 'image/jpeg;foo=bar'], 'figure1')
         );
 
         $this->mock->save(
-            new Request('GET', 'http://www.example.com/assets/figure2.jpg'),
+            new Request('GET', 'http://origin-assets/assets/figure2.jpg'),
             new Response(200, ['Content-Type' => 'image/jpeg;foo=bar'], 'figure2 jpeg')
         );
 
         $this->mock->save(
-            new Request('GET', 'http://www.example.com/assets/figure2'),
+            new Request('GET', 'http://origin-assets/assets/figure2'),
             new Response(200, ['Content-Type' => 'video/avi'], 'figure2 avi')
         );
 
         $this->mock->save(
-            new Request('GET', 'http://www.example.com/assets/something/figure2.txt'),
+            new Request('GET', 'http://origin-assets/assets/something/figure2.txt'),
             new Response(200, ['Content-Type' => 'application/xml'], 'figure2 xml')
         );
 
         $this->mock->save(
-            new Request('GET', 'http://www.example.com/assets/figure2.pdf'),
+            new Request('GET', 'http://origin-assets/assets/figure2.pdf'),
             new Response(200, ['Content-Type' => 'application/pdf'], 'figure2 pdf')
         );
 
         $mover->onManipulate($event);
 
+        $basePath = 'http://public-assets/path/id/v1';
+
         $expected = FluentDOM::load(
             <<<XML
-<item xmlns="http://libero.pub" xml:base="http://www.example.com/">
+<item xmlns="http://libero.pub" xml:base="http://origin-assets/">
     <article xmlns="http://jats.nlm.nih.gov" xmlns:xlink="http://www.w3.org/1999/xlink">
         <front>
             <article-meta>
-                <self-uri xlink:href="http://assets/path/id/v1/dcd99c5055598bed7350ec58a4153d5d.pdf"/>
+                <self-uri xlink:href="{$basePath}/dcd99c5055598bed7350ec58a4153d5d.pdf"/>
             </article-meta>
         </front>
         <body>
-            <graphic xlink:href="http://assets/path/id/v1/879f77a11b0649cb8af511fa5d6e4a7e.jpeg"
+            <graphic xlink:href="{$basePath}/879f77a11b0649cb8af511fa5d6e4a7e.jpeg"
                 mimetype="image" mime-subtype="jpeg"/>
             <sec>
                 <fig>
-                    <graphic xlink:href="http://assets/path/id/v1/249c9efda2fc00821bb65c8ca1c89635.jpeg"
+                    <graphic xlink:href="{$basePath}/249c9efda2fc00821bb65c8ca1c89635.jpeg"
                         mimetype="image" mime-subtype="jpeg"/>
-                    <media xlink:href="http://assets/path/id/v1/f1aa6a59b56406414301af35cf1a1178"
+                    <media xlink:href="{$basePath}/f1aa6a59b56406414301af35cf1a1178"
                         mimetype="video" mime-subtype="avi">
                         <caption>
                             <p>
                                 <fig-group>
                                     <alternatives>
                                         <supplementary-material mimetype="application" mime-subtype="xml" 
-                                            xlink:href="http://assets/path/id/v1/3f67ade33288e5f9a9f54b8bac3f3042.xml"/>
+                                            xlink:href="{$basePath}/3f67ade33288e5f9a9f54b8bac3f3042.xml"/>
                                     </alternatives>
                                 </fig-group>
                             </p>
                         </caption>
                     </media>
-                    <graphic xlink:href="http://assets/path/id/v1/601e38e045a4d1b50350ecf57e4e8630.pdf"
+                    <graphic xlink:href="{$basePath}/601e38e045a4d1b50350ecf57e4e8630.pdf"
                         mimetype="application" mime-subtype="pdf"/>
                     <alternatives>
-                        <graphic xlink:href="http://assets/path/id/v1/249c9efda2fc00821bb65c8ca1c89635.jpeg"
+                        <graphic xlink:href="{$basePath}/249c9efda2fc00821bb65c8ca1c89635.jpeg"
                             mimetype="image" mime-subtype="jpeg"/>
                     </alternatives>
                 </fig>
@@ -242,7 +244,7 @@ XML
 
         $document = FluentDOM::load(
             <<<XML
-<item xmlns="http://libero.pub" xml:base="http://www.example.com/">
+<item xmlns="http://libero.pub" xml:base="http://origin-assets/">
     <article xmlns="http://jats.nlm.nih.gov" xmlns:xlink="http://www.w3.org/1999/xlink">
         <body>
             <graphic xlink:href="assets/figure1.jpg"/>
@@ -259,7 +261,7 @@ XML
         $event = new Event($task, $marking, $transition);
 
         $this->mock->save(
-            new Request('GET', 'http://www.example.com/assets/figure1.jpg'),
+            new Request('GET', 'http://origin-assets/assets/figure1.jpg'),
             new Response(200, ['Content-Type' => 'image/jpeg;foo=bar'], 'figure1')
         );
 
@@ -277,17 +279,17 @@ XML
      */
     public function it_checks_the_origin_uri() : void
     {
-        $mover = new MoveJatsAssets('~^http://www\.example\.com/assets/~', $this->filesystem, $this->client);
+        $mover = new MoveJatsAssets('~^http://origin-assets/assets/~', $this->filesystem, $this->client);
 
         $document = FluentDOM::load(
             <<<XML
 <item xmlns="http://libero.pub">
     <article xmlns="http://jats.nlm.nih.gov" xmlns:xlink="http://www.w3.org/1999/xlink">
         <body>
-            <graphic xlink:href="http://www.example.com/assets/figure.jpg"/>
-            <graphic xlink:href="http://not.example.com/assets/figure.jpg"/>
-            <graphic xlink:href="http://www.example.com/path/assets/figure.jpg"/>
-            <graphic xlink:href="http://www.example.com/path/../assets/figure.jpg"/>
+            <graphic xlink:href="http://origin-assets/assets/figure.jpg"/>
+            <graphic xlink:href="http://some-other-host/assets/figure.jpg"/>
+            <graphic xlink:href="http://origin-assets/path/assets/figure.jpg"/>
+            <graphic xlink:href="http://origin-assets/path/../assets/figure.jpg"/>
             <graphic xlink:href="assets/figure.jpg"/>
             <graphic xlink:href="/assets/figure.jpg"/>
         </body>
@@ -303,7 +305,7 @@ XML
         $event = new Event($task, $marking, $transition);
 
         $this->mock->save(
-            new Request('GET', 'http://www.example.com/assets/figure.jpg'),
+            new Request('GET', 'http://origin-assets/assets/figure.jpg'),
             new Response(200, ['Content-Type' => 'image/jpeg'], 'figure')
         );
 
@@ -314,11 +316,11 @@ XML
 <item xmlns="http://libero.pub">
     <article xmlns="http://jats.nlm.nih.gov" xmlns:xlink="http://www.w3.org/1999/xlink">
         <body>
-            <graphic xlink:href="http://assets/path/id/v1/cb071d80d1a54f21c8867a038f6a6c66.jpeg"
+            <graphic xlink:href="http://public-assets/path/id/v1/cb071d80d1a54f21c8867a038f6a6c66.jpeg"
                 mimetype="image" mime-subtype="jpeg"/>
-            <graphic xlink:href="http://not.example.com/assets/figure.jpg"/>
-            <graphic xlink:href="http://www.example.com/path/assets/figure.jpg"/>
-            <graphic xlink:href="http://assets/path/id/v1/cb071d80d1a54f21c8867a038f6a6c66.jpeg"
+            <graphic xlink:href="http://some-other-host/assets/figure.jpg"/>
+            <graphic xlink:href="http://origin-assets/path/assets/figure.jpg"/>
+            <graphic xlink:href="http://public-assets/path/id/v1/cb071d80d1a54f21c8867a038f6a6c66.jpeg"
                 mimetype="image" mime-subtype="jpeg"/>
             <graphic xlink:href="assets/figure.jpg"/>
             <graphic xlink:href="/assets/figure.jpg"/>

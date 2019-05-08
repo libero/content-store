@@ -17,4 +17,4 @@ services:
               arguments:
                   - 'League\Flysystem\Memory\MemoryAdapter'
                   - 'Thib\FlysystemPublicUrlPlugin\Adapter\LocalUrlAdapter'
-                  - ['http://assets/path']
+                  - ['http://public-assets/path']

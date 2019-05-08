@@ -88,7 +88,7 @@ final class ContentServiceTest extends KernelTestCase
         self::bootKernel();
 
         self::mockHttpResponse(
-            new Psr7Request('GET', 'https://www.example.com/new-article/assets/figure1.jpg'),
+            new Psr7Request('GET', 'http://origin-assets/new-article/assets/figure1.jpg'),
             new Psr7Response(Response::HTTP_OK, ['Content-Type' => 'image/jpeg;foo=bar'], 'figure1')
         );
 
@@ -106,7 +106,7 @@ final class ContentServiceTest extends KernelTestCase
         <service>articles</service>
     </meta>
     <article xmlns="http://jats.nlm.nih.gov" xmlns:xlink="http://www.w3.org/1999/xlink"
-        xml:base="https://www.example.com/new-article/">
+        xml:base="http://origin-assets/new-article/">
         <front>
             <article-meta>
                 <title-group>
@@ -141,7 +141,7 @@ XML
         <service>articles</service>
     </meta>
     <article xmlns="http://jats.nlm.nih.gov" xmlns:xlink="http://www.w3.org/1999/xlink"
-        xml:base="https://www.example.com/new-article/">
+        xml:base="http://origin-assets/new-article/">
         <front>
             <article-meta>
                 <title-group>
@@ -154,7 +154,7 @@ XML
                 <title>Introduction</title>
                 <fig>
                     <graphic mimetype="image" mime-subtype="jpeg"
-                        xlink:href="http://assets/path/new-article/v1/879f77a11b0649cb8af511fa5d6e4a7e.jpeg"/>
+                        xlink:href="http://public-assets/path/new-article/v1/879f77a11b0649cb8af511fa5d6e4a7e.jpeg"/>
                 </fig>
             </sec>
         </body>
