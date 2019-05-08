@@ -10,7 +10,6 @@
         <env name="APP_SECRET" value="foobarbazqux"/>
         <env name="KERNEL_CLASS" value="Libero\ContentStore\Kernel"/>
         <env name="SHELL_VERBOSITY" value="-1"/>
-        <env name="ASSETS_URI" value="http://assets/path/" force="true"/>
         <env name="ASSETS_ORIGIN" value="~.+~" force="true"/>
     </php>
 
