@@ -150,7 +150,7 @@ XML
             <sec>
                 <title>Introduction</title>
                 <fig>
-                    <graphic mimetype="image" sub-mimetype="jpeg"
+                    <graphic mimetype="image" mime-subtype="jpeg"
                         xlink:href="http://assets/path/new-article/v1/879f77a11b0649cb8af511fa5d6e4a7e.jpeg"/>
                 </fig>
             </sec>

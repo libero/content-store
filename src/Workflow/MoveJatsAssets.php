@@ -125,7 +125,7 @@ final class MoveJatsAssets implements EventSubscriberInterface
 
                         if (in_array($asset->localName, self::HAS_MIMETYPE_ATTRIBUTE, true)) {
                             $asset->setAttribute('mimetype', $contentType[0]);
-                            $asset->setAttribute('sub-mimetype', $contentType[1]);
+                            $asset->setAttribute('mime-subtype', $contentType[1]);
                         }
                     }
                 );
