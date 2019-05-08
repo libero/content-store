@@ -87,7 +87,7 @@ final class ContentServiceTest extends KernelTestCase
 
         self::bootKernel();
 
-        self::mockApiResponse(
+        self::mockHttpResponse(
             new Psr7Request('GET', 'https://www.example.com/new-article/assets/figure1.jpg'),
             new Psr7Response(Response::HTTP_OK, ['Content-Type' => 'image/jpeg;foo=bar'], 'figure1')
         );
