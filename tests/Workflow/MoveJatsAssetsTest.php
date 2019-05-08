@@ -99,7 +99,7 @@ final class MoveJatsAssetsTest extends TestCase
      */
     public function it_handles_assets() : void
     {
-        $mover = new MoveJatsAssets('~^http://www.example.com/assets/~', $this->filesystem, $this->client);
+        $mover = new MoveJatsAssets('~.+~', $this->filesystem, $this->client);
 
         $document = FluentDOM::load(
             <<<XML
@@ -236,7 +236,7 @@ XML
      */
     public function it_sets_metadata() : void
     {
-        $mover = new MoveJatsAssets('~^http://www.example.com/assets/~', $this->filesystem, $this->client);
+        $mover = new MoveJatsAssets('~.+~', $this->filesystem, $this->client);
 
         $document = FluentDOM::load(
             <<<XML
@@ -268,5 +268,64 @@ XML
         $this->assertSame('figure1', $this->filesystem->read($path));
         $this->assertSame(AdapterInterface::VISIBILITY_PUBLIC, $this->filesystem->getVisibility($path));
         $this->assertSame('image/jpeg', $this->filesystem->getMimetype($path));
+    }
+
+    /**
+     * @test
+     */
+    public function it_checks_the_origin_uri() : void
+    {
+        $mover = new MoveJatsAssets('~^http://www\.example\.com/assets/~', $this->filesystem, $this->client);
+
+        $document = FluentDOM::load(
+            <<<XML
+<item xmlns="http://libero.pub">
+    <article xmlns="http://jats.nlm.nih.gov" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <body>
+            <graphic xlink:href="http://www.example.com/assets/figure.jpg"/>
+            <graphic xlink:href="http://not.example.com/assets/figure.jpg"/>
+            <graphic xlink:href="http://www.example.com/path/assets/figure.jpg"/>
+            <graphic xlink:href="http://www.example.com/path/../assets/figure.jpg"/>
+            <graphic xlink:href="assets/figure.jpg"/>
+            <graphic xlink:href="/assets/figure.jpg"/>
+        </body>
+    </article>
+</item>
+XML
+        );
+
+        $marking = new Marking();
+        $task = new PutTask('service', ItemId::fromString('id'), ItemVersionNumber::fromInt(1), $document);
+        $transition = new Transition('transition', 'place1', 'place2');
+
+        $event = new Event($task, $marking, $transition);
+
+        $this->mock->save(
+            new Request('GET', 'http://www.example.com/assets/figure.jpg'),
+            new Response(200, ['Content-Type' => 'image/jpeg'], 'figure')
+        );
+
+        $mover->onManipulate($event);
+
+        $expected = FluentDOM::load(
+            <<<XML
+<item xmlns="http://libero.pub">
+    <article xmlns="http://jats.nlm.nih.gov" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <body>
+            <graphic xlink:href="http://assets/path/id/v1/cb071d80d1a54f21c8867a038f6a6c66.jpeg"
+                mimetype="image" mime-subtype="jpeg"/>
+            <graphic xlink:href="http://not.example.com/assets/figure.jpg"/>
+            <graphic xlink:href="http://www.example.com/path/assets/figure.jpg"/>
+            <graphic xlink:href="http://assets/path/id/v1/cb071d80d1a54f21c8867a038f6a6c66.jpeg"
+                mimetype="image" mime-subtype="jpeg"/>
+            <graphic xlink:href="assets/figure.jpg"/>
+            <graphic xlink:href="/assets/figure.jpg"/>
+        </body>
+    </article>
+</item>
+XML
+        );
+
+        $this->assertXmlStringEqualsXmlString($expected, $task->getDocument());
     }
 }

@@ -6,6 +6,7 @@ namespace Libero\ContentStore\Workflow;
 
 use FluentDOM\DOM\Element;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Psr7\UriNormalizer;
 use GuzzleHttp\Psr7\UriResolver;
 use InvalidArgumentException;
 use League\Flysystem\AdapterInterface;
@@ -81,6 +82,8 @@ final class MoveJatsAssets implements EventSubscriberInterface
             if ($asset->baseURI && !$uri->getScheme()) {
                 $uri = UriResolver::resolve(uri_for($asset->baseURI), $uri);
             }
+
+            $uri = UriNormalizer::normalize($uri);
 
             if (!$uri->getScheme() || 0 === preg_match($this->origin, (string) $uri)) {
                 continue;
