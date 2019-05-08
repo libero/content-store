@@ -38,12 +38,12 @@ services:
             DEFAULT_LOCALE:
             SERVICE_NAME:
             DATABASE_URL: pgsql://postgres:@db:5432/postgres
-            ASSETS_URI: http://localhost:8081/bucket/
+            AWS_KEY: *S3Key
+            AWS_SECRET: *S3Secret
+            AWS_REGION: *S3Region
             S3_ENDPOINT: http://s3:9000
-            S3_KEY: *S3Key
-            S3_SECRET: *S3Secret
-            S3_REGION: *S3Region
             S3_BUCKET: *S3Bucket
+            S3_PATH_STYLE_ENDPOINT: 'true'
         command: >
             sh -c '
                 while ! nc db 5432; do sleep 1; done

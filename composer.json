@@ -18,6 +18,7 @@
         "ext-ctype": "*",
         "ext-mbstring": "*",
         "ext-pdo_pgsql": "*",
+        "aws/aws-sdk-php-symfony": "^2.0",
         "csa/guzzle-bundle": "^3.1",
         "doctrine/doctrine-bundle": "^1.10",
         "doctrine/doctrine-migrations-bundle": "^2.0",

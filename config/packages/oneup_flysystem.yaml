@@ -1,12 +1,11 @@
 parameters:
-    env(S3_ENDPOINT): ~
     env(S3_PREFIX): ~
 
 oneup_flysystem:
     adapters:
         assets_adapter:
             awss3v3:
-                client: oneup_flysystem.assets_adapter.s3_client
+                client: aws.s3
                 bucket: '%env(S3_BUCKET)%'
                 prefix: '%env(S3_PREFIX)%'
     filesystems:
@@ -17,16 +16,4 @@ oneup_flysystem:
 
 services:
 
-    oneup_flysystem.assets_adapter.s3_client:
-        class: Aws\S3\S3Client
-        arguments:
-            - version: '2006-03-01'
-              region: '%env(S3_REGION)%'
-              endpoint: '%env(S3_ENDPOINT)%'
-              use_path_style_endpoint: true
-              credentials:
-                  key: '%env(S3_KEY)%'
-                  secret: '%env(S3_SECRET)%'
-
     Thib\FlysystemPublicUrlPlugin\PublicUrlPlugin:
-
