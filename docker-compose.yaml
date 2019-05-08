@@ -23,9 +23,9 @@ services:
         command: >
             -ce '
                 while ! nc s3 9000; do sleep 1; done
-                /usr/bin/mc config host add minio http://s3:9000 $${AWS_ACCESS_KEY_ID} $${AWS_SECRET_ACCESS_KEY}
-                /usr/bin/mc mb minio/$${S3_BUCKET} --region $${AWS_DEFAULT_REGION}
-                /usr/bin/mc policy download minio/$${S3_BUCKET}
+                mc config host add minio http://s3:9000 $${AWS_ACCESS_KEY_ID} $${AWS_SECRET_ACCESS_KEY}
+                mc mb minio/$${S3_BUCKET} --region $${AWS_DEFAULT_REGION}
+                mc policy download minio/$${S3_BUCKET}
             '
         depends_on:
             - s3
@@ -53,7 +53,7 @@ services:
         image: libero/content-store:${IMAGE_TAG:-master}
         depends_on:
             - db
-            - s3
+            - s3-bucket
     web:
         image: nginx:1.15.8-alpine
         volumes:
