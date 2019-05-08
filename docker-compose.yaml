@@ -50,8 +50,6 @@ services:
                 bin/console doctrine:migrations:migrate --no-interaction
                 php-fpm
             '
-        volumes:
-            - assets:/app/var/assets/
         image: libero/content-store:${IMAGE_TAG:-master}
         depends_on:
             - db
@@ -60,11 +58,7 @@ services:
         image: nginx:1.15.8-alpine
         volumes:
             - ./.docker/nginx.conf:/etc/nginx/conf.d/default.conf
-            - assets:/app/public/assets/
         ports:
             - 8080:80
         depends_on:
             - app
-
-volumes:
-    assets:
