@@ -39,7 +39,6 @@ services:
             SERVICE_NAME:
             DATABASE_URL: pgsql://postgres:@db:5432/postgres
             ASSETS_URI: http://localhost:8081/bucket/
-            ASSETS_PATH: /app/var/assets/
             S3_ENDPOINT: http://s3:9000
             S3_KEY: *S3Key
             S3_SECRET: *S3Secret
