@@ -1,14 +1,11 @@
 parameters:
-    env(AWS_REGION): 'us-east-1'
+    env(AWS_DEFAULT_REGION): 'us-east-1'
     env(AWS_VERSION): '2006-03-01'
     env(S3_ENDPOINT): ~
     env(S3_PATH_STYLE_ENDPOINT): false
 
 aws:
-    credentials:
-        key: '%env(AWS_KEY)%'
-        secret: '%env(AWS_SECRET)%'
-    region: '%env(AWS_REGION)%'
+    region: '%env(AWS_DEFAULT_REGION)%'
     version: '%env(AWS_VERSION)%'
     S3:
         endpoint: '%env(S3_ENDPOINT)%'

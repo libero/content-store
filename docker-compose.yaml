@@ -6,25 +6,25 @@ services:
     s3:
         image: minio/minio:RELEASE.2019-05-02T19-07-09Z
         environment:
-            MINIO_ACCESS_KEY: &S3Key AKIAIOSFODNN7EXAMPLE
-            MINIO_SECRET_KEY: &S3Secret wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-            MINIO_REGION: &S3Region us-east-1
+            MINIO_ACCESS_KEY: &AWSKey AKIAIOSFODNN7EXAMPLE
+            MINIO_SECRET_KEY: &AWSSecret wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+            MINIO_REGION: &AWSRegion us-east-1
         command: server /app
         ports:
             - 8081:9000
     s3-bucket:
         image: minio/mc:RELEASE.2019-05-01T23-27-44Z
         environment:
-            S3_KEY: *S3Key
-            S3_SECRET: *S3Secret
-            S3_REGION: *S3Region
+            AWS_ACCESS_KEY_ID: *AWSKey
+            AWS_SECRET_ACCESS_KEY: *AWSSecret
+            AWS_DEFAULT_REGION: *AWSRegion
             S3_BUCKET: &S3Bucket bucket
         entrypoint: sh
         command: >
             -ce '
                 while ! nc s3 9000; do sleep 1; done
-                /usr/bin/mc config host add minio http://s3:9000 $${S3_KEY} $${S3_SECRET}
-                /usr/bin/mc mb minio/$${S3_BUCKET} --region $${S3_REGION}
+                /usr/bin/mc config host add minio http://s3:9000 $${AWS_ACCESS_KEY_ID} $${AWS_SECRET_ACCESS_KEY}
+                /usr/bin/mc mb minio/$${S3_BUCKET} --region $${AWS_DEFAULT_REGION}
                 /usr/bin/mc policy download minio/$${S3_BUCKET}
             '
         depends_on:
@@ -38,9 +38,9 @@ services:
             DEFAULT_LOCALE:
             SERVICE_NAME:
             DATABASE_URL: pgsql://postgres:@db:5432/postgres
-            AWS_KEY: *S3Key
-            AWS_SECRET: *S3Secret
-            AWS_REGION: *S3Region
+            AWS_ACCESS_KEY_ID: *AWSKey
+            AWS_SECRET_ACCESS_KEY: *AWSSecret
+            AWS_DEFAULT_REGION: *AWSRegion
             S3_ENDPOINT: http://s3:9000
             S3_BUCKET: *S3Bucket
             S3_PATH_STYLE_ENDPOINT: 'true'
