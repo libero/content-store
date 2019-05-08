@@ -13,7 +13,7 @@ oneup_flysystem:
         assets:
             adapter: assets_adapter
             plugins:
-                - oneup_flysystem.assets_filesystem.plugin.http_url
+                - Thib\FlysystemPublicUrlPlugin\PublicUrlPlugin
 
 services:
 
@@ -28,7 +28,5 @@ services:
                   key: '%env(S3_KEY)%'
                   secret: '%env(S3_SECRET)%'
 
-    oneup_flysystem.assets_filesystem.plugin.http_url:
-        class: Libero\ContentStore\Flysystem\HttpUrlPlugin
-        arguments:
-            - '%env(ASSETS_URI)%'
+    Thib\FlysystemPublicUrlPlugin\PublicUrlPlugin:
+

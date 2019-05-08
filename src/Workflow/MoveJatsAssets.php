@@ -50,8 +50,8 @@ final class MoveJatsAssets implements EventSubscriberInterface
         $this->filesystem = $filesystem;
         $this->client = $client;
 
-        if (!is_callable([$filesystem, 'getHttpUrl'])) {
-            throw new InvalidArgumentException('Requires the HTTP URL plugin');
+        if (!is_callable([$filesystem, 'getPublicUrl'])) {
+            throw new InvalidArgumentException('Requires the public URL plugin');
         }
     }
 
@@ -124,7 +124,7 @@ final class MoveJatsAssets implements EventSubscriberInterface
                             ]
                         );
 
-                        $asset->setAttribute('xlink:href', $this->filesystem->getHttpUrl($path));
+                        $asset->setAttribute('xlink:href', $this->filesystem->getPublicUrl($path));
 
                         if (in_array($asset->localName, self::HAS_MIMETYPE_ATTRIBUTE, true)) {
                             $asset->setAttribute('mimetype', $contentType[0]);

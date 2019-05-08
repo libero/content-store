@@ -21,12 +21,13 @@ use League\Flysystem\Memory\MemoryAdapter;
 use Libero\ContentApiBundle\Model\ItemId;
 use Libero\ContentApiBundle\Model\ItemVersionNumber;
 use Libero\ContentApiBundle\Model\PutTask;
-use Libero\ContentStore\Flysystem\HttpUrlPlugin;
 use Libero\ContentStore\Workflow\MoveJatsAssets;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Workflow\Event\Event;
 use Symfony\Component\Workflow\Marking;
 use Symfony\Component\Workflow\Transition;
+use Thib\FlysystemPublicUrlPlugin\Adapter\LocalUrlAdapter;
+use Thib\FlysystemPublicUrlPlugin\PublicUrlPlugin;
 use Twistor\FlysystemStreamWrapper;
 use function array_filter;
 
@@ -62,7 +63,8 @@ final class MoveJatsAssetsTest extends TestCase
     public function setupFilesystem() : void
     {
         $this->filesystem = new Filesystem(new MemoryAdapter());
-        $this->filesystem->addPlugin(new HttpUrlPlugin('http://assets/path/'));
+        $this->filesystem->addPlugin($plugin = new PublicUrlPlugin());
+        $plugin->addAdapter(MemoryAdapter::class, LocalUrlAdapter::class, ['http://assets/path']);
     }
 
     /**
