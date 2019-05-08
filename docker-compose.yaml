@@ -25,7 +25,7 @@ services:
                 while ! nc s3 9000; do sleep 1; done
                 /usr/bin/mc config host add minio http://s3:9000 $${S3_KEY} $${S3_SECRET}
                 /usr/bin/mc mb minio/$${S3_BUCKET} --region $${S3_REGION}
-                /usr/bin/mc policy download minio/bucket
+                /usr/bin/mc policy download minio/$${S3_BUCKET}
             '
         depends_on:
             - s3
