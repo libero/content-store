@@ -79,9 +79,12 @@ final class ContentServiceTest extends KernelTestCase
 
     /**
      * @test
+     * @backupGlobals enabled
      */
     public function it_adds_an_item() : void
     {
+        $_ENV['ASSETS_ORIGIN'] = '~.+~';
+
         self::bootKernel();
 
         self::mockApiResponse(
