@@ -143,5 +143,6 @@ XML
         $this->assertTrue($this->filesystem->has($path));
         $this->assertSame(AdapterInterface::VISIBILITY_PUBLIC, $this->filesystem->getVisibility($path));
         $this->assertSame('figure1', $this->filesystem->read($path));
+        $this->assertSame('image/jpeg', $this->filesystem->getMimetype($path));
     }
 }
