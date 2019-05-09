@@ -8,13 +8,3 @@ oneup_flysystem:
         guzzle_cache:
             adapter: guzzle_cache_adapter
             stream_wrapper: guzzle-cache
-
-services:
-
-    Thib\FlysystemPublicUrlPlugin\PublicUrlPlugin:
-        calls:
-            - method: addAdapter
-              arguments:
-                  - 'League\Flysystem\Memory\MemoryAdapter'
-                  - 'Thib\FlysystemPublicUrlPlugin\Adapter\LocalUrlAdapter'
-                  - ['http://public-assets/path']

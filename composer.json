@@ -40,8 +40,7 @@
         "symfony/routing": "^4.2",
         "symfony/translation": "^4.2",
         "symfony/workflow": "^4.2",
-        "symfony/yaml": "^4.2",
-        "thib92/flysystem-public-url-plugin": "^0.2"
+        "symfony/yaml": "^4.2"
     },
     "require-dev": {
         "csa/guzzle-cache-middleware": "^1.0",

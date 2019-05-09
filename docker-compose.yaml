@@ -44,6 +44,7 @@ services:
             S3_ENDPOINT: http://s3:9000
             S3_BUCKET: *S3Bucket
             S3_PATH_STYLE_ENDPOINT: 'true'
+            S3_PUBLIC_ENDPOINT: http://localhost:8081/bucket
         command: >
             sh -c '
                 while ! nc db 5432; do sleep 1; done

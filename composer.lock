@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f3e4bee0cd355b3bf0105b873b58aaca",
+    "content-hash": "da6f09fea309638933a6db9ad48bba09",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -4143,47 +4143,6 @@
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
             "time": "2019-01-16T20:35:37+00:00"
-        },
-        {
-            "name": "thib92/flysystem-public-url-plugin",
-            "version": "0.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/thib92/flysystem-public-url-plugin.git",
-                "reference": "f5903ea19a91bc1e34c618de869311191899234c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/thib92/flysystem-public-url-plugin/zipball/f5903ea19a91bc1e34c618de869311191899234c",
-                "reference": "f5903ea19a91bc1e34c618de869311191899234c",
-                "shasum": ""
-            },
-            "require": {
-                "league/flysystem": "^1.0"
-            },
-            "require-dev": {
-                "league/flysystem-aws-s3-v3": "^1.0@dev",
-                "phpunit/phpunit": "^7"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Thib\\FlysystemPublicUrlPlugin\\": "src/",
-                    "Thib\\FlysystemPublicUrlPluginTest\\": "tests/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Thibault HENRY",
-                    "email": "thibhenry92@gmail.com"
-                }
-            ],
-            "description": "A Flysystem plugin to get the public URL of a file",
-            "time": "2019-05-04T18:33:33+00:00"
         },
         {
             "name": "twig/twig",

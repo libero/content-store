@@ -8,7 +8,6 @@ use FluentDOM\DOM\Element;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\UriNormalizer;
 use GuzzleHttp\Psr7\UriResolver;
-use InvalidArgumentException;
 use League\Flysystem\AdapterInterface;
 use League\Flysystem\FilesystemInterface;
 use Libero\ContentApiBundle\Model\PutTask;
@@ -23,7 +22,6 @@ use function GuzzleHttp\Promise\all;
 use function GuzzleHttp\Psr7\uri_for;
 use function implode;
 use function in_array;
-use function is_callable;
 use function is_resource;
 use function Libero\ContentApiBundle\stream_hash;
 use function preg_match;
@@ -43,16 +41,18 @@ final class MoveJatsAssets implements EventSubscriberInterface
     private $client;
     private $filesystem;
     private $origin;
+    private $publicUri;
 
-    public function __construct(string $origin, FilesystemInterface $filesystem, ClientInterface $client)
-    {
+    public function __construct(
+        string $origin,
+        string $publicUri,
+        FilesystemInterface $filesystem,
+        ClientInterface $client
+    ) {
         $this->origin = $origin;
+        $this->publicUri = $publicUri;
         $this->filesystem = $filesystem;
         $this->client = $client;
-
-        if (!is_callable([$filesystem, 'getPublicUrl'])) {
-            throw new InvalidArgumentException('Requires the public URL plugin');
-        }
     }
 
     public static function getSubscribedEvents() : array
@@ -124,7 +124,7 @@ final class MoveJatsAssets implements EventSubscriberInterface
                             ]
                         );
 
-                        $asset->setAttribute('xlink:href', $this->filesystem->getPublicUrl($path));
+                        $asset->setAttribute('xlink:href', sprintf('%s/%s', $this->publicUri, $path));
 
                         if (in_array($asset->localName, self::HAS_MIMETYPE_ATTRIBUTE, true)) {
                             $asset->setAttribute('mimetype', $contentType[0]);

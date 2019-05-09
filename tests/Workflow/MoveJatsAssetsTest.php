@@ -16,7 +16,6 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use League\Flysystem\AdapterInterface;
 use League\Flysystem\Filesystem;
-use League\Flysystem\FilesystemInterface;
 use League\Flysystem\Memory\MemoryAdapter;
 use Libero\ContentApiBundle\Model\ItemId;
 use Libero\ContentApiBundle\Model\ItemVersionNumber;
@@ -26,8 +25,6 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Workflow\Event\Event;
 use Symfony\Component\Workflow\Marking;
 use Symfony\Component\Workflow\Transition;
-use Thib\FlysystemPublicUrlPlugin\Adapter\LocalUrlAdapter;
-use Thib\FlysystemPublicUrlPlugin\PublicUrlPlugin;
 use Twistor\FlysystemStreamWrapper;
 use UnexpectedValueException;
 use function array_filter;
@@ -36,7 +33,7 @@ final class MoveJatsAssetsTest extends TestCase
 {
     /** @var ClientInterface */
     private $client;
-    /** @var FilesystemInterface */
+    /** @var Filesystem */
     private $filesystem;
     /** @var MockStorageAdapter */
     private $mock;
@@ -64,8 +61,6 @@ final class MoveJatsAssetsTest extends TestCase
     public function setupFilesystem() : void
     {
         $this->filesystem = new Filesystem(new MemoryAdapter());
-        $this->filesystem->addPlugin($plugin = new PublicUrlPlugin());
-        $plugin->addAdapter(MemoryAdapter::class, LocalUrlAdapter::class, ['http://public-assets/path']);
     }
 
     /**
@@ -81,7 +76,7 @@ final class MoveJatsAssetsTest extends TestCase
      */
     public function it_does_nothing_if_it_is_not_jats() : void
     {
-        $mover = new MoveJatsAssets('~.+~', $this->filesystem, $this->client);
+        $mover = new MoveJatsAssets('~.+~', 'http://public-assets/path', $this->filesystem, $this->client);
 
         $document = FluentDOM::load('<item xmlns="http://libero.pub"/>');
 
@@ -102,7 +97,7 @@ final class MoveJatsAssetsTest extends TestCase
      */
     public function it_handles_assets() : void
     {
-        $mover = new MoveJatsAssets('~.+~', $this->filesystem, $this->client);
+        $mover = new MoveJatsAssets('~.+~', 'http://public-assets/path', $this->filesystem, $this->client);
 
         $document = FluentDOM::load(
             <<<XML
@@ -241,7 +236,7 @@ XML
      */
     public function it_sets_metadata() : void
     {
-        $mover = new MoveJatsAssets('~.+~', $this->filesystem, $this->client);
+        $mover = new MoveJatsAssets('~.+~', 'http://public-assets/path', $this->filesystem, $this->client);
 
         $document = FluentDOM::load(
             <<<XML
@@ -280,7 +275,12 @@ XML
      */
     public function it_checks_the_origin_uri() : void
     {
-        $mover = new MoveJatsAssets('~^http://origin-assets/assets/~', $this->filesystem, $this->client);
+        $mover = new MoveJatsAssets(
+            '~^http://origin-assets/assets/~',
+            'http://public-assets/path',
+            $this->filesystem,
+            $this->client
+        );
 
         $document = FluentDOM::load(
             <<<XML
@@ -339,7 +339,7 @@ XML
      */
     public function it_fails_if_an_invalid_content_type_is_returned() : void
     {
-        $mover = new MoveJatsAssets('~.+~', $this->filesystem, $this->client);
+        $mover = new MoveJatsAssets('~.+~', 'http://public-assets/path', $this->filesystem, $this->client);
 
         $document = FluentDOM::load(
             <<<XML

@@ -16,4 +16,5 @@ services:
     Libero\ContentStore\Workflow\MoveJatsAssets:
         arguments:
             - '%env(ASSETS_ORIGIN)%'
+            - '%env(S3_PUBLIC_ENDPOINT)%'
             - '@oneup_flysystem.assets_filesystem'

@@ -11,9 +11,3 @@ oneup_flysystem:
     filesystems:
         assets:
             adapter: assets_adapter
-            plugins:
-                - Thib\FlysystemPublicUrlPlugin\PublicUrlPlugin
-
-services:
-
-    Thib\FlysystemPublicUrlPlugin\PublicUrlPlugin:
