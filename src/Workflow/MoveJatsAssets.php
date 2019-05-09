@@ -17,8 +17,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\File\MimeType\ExtensionGuesser;
 use Symfony\Component\Workflow\Event\Event;
 use UnexpectedValueException;
+use function array_shift;
 use function count;
-use function explode;
 use function GuzzleHttp\Promise\all;
 use function GuzzleHttp\Psr7\uri_for;
 use function implode;
@@ -93,8 +93,8 @@ final class MoveJatsAssets implements EventSubscriberInterface
                 ->requestAsync('GET', $uri, ['http_errors' => true])
                 ->then(
                     function (ResponseInterface $response) use ($asset, $task) {
-                        $contentType = explode(';', $response->getHeaderLine('Content-Type'), 2)[0] ?? '';
-                        $contentType = explode('/', $contentType, 2);
+                        preg_match('~^(.+?)/(.+?)(?:$|;)~', $response->getHeaderLine('Content-Type'), $contentType);
+                        array_shift($contentType);
 
                         if (2 !== count($contentType)) {
                             throw new UnexpectedValueException('Invalid content-type provided');

@@ -29,6 +29,7 @@ use Symfony\Component\Workflow\Transition;
 use Thib\FlysystemPublicUrlPlugin\Adapter\LocalUrlAdapter;
 use Thib\FlysystemPublicUrlPlugin\PublicUrlPlugin;
 use Twistor\FlysystemStreamWrapper;
+use UnexpectedValueException;
 use function array_filter;
 
 final class MoveJatsAssetsTest extends TestCase
@@ -331,5 +332,41 @@ XML
         );
 
         $this->assertXmlStringEqualsXmlString($expected, $task->getDocument());
+    }
+
+    /**
+     * @test
+     */
+    public function it_fails_if_an_invalid_content_type_is_returned() : void
+    {
+        $mover = new MoveJatsAssets('~.+~', $this->filesystem, $this->client);
+
+        $document = FluentDOM::load(
+            <<<XML
+<item xmlns="http://libero.pub">
+    <article xmlns="http://jats.nlm.nih.gov" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <body>
+            <graphic xlink:href="http://origin-assets/assets/figure.jpg"/>
+        </body>
+    </article>
+</item>
+XML
+        );
+
+        $marking = new Marking();
+        $task = new PutTask('service', ItemId::fromString('id'), ItemVersionNumber::fromInt(1), $document);
+        $transition = new Transition('transition', 'place1', 'place2');
+
+        $event = new Event($task, $marking, $transition);
+
+        $this->mock->save(
+            new Request('GET', 'http://origin-assets/assets/figure.jpg'),
+            new Response(200, ['Content-Type' => 'foo'], 'figure')
+        );
+
+        $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Invalid content-type provided');
+
+        $mover->onManipulate($event);
     }
 }
