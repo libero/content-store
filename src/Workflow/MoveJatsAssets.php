@@ -7,6 +7,7 @@ namespace Libero\ContentStore\Workflow;
 use FluentDOM\DOM\Document;
 use FluentDOM\DOM\Element;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\Psr7\UriNormalizer;
 use GuzzleHttp\Psr7\UriResolver;
 use League\Flysystem\AdapterInterface;
@@ -73,7 +74,7 @@ final class MoveJatsAssets implements EventSubscriberInterface
         foreach ($this->findAssets($task->getDocument()) as $asset) {
             $uri = $this->elementUri($asset);
 
-            if (!$uri->getScheme() || 0 === preg_match($this->origin, (string) $uri)) {
+            if (!Uri::isAbsolute($uri) || 0 === preg_match($this->origin, (string) $uri)) {
                 continue;
             }
 
@@ -107,7 +108,7 @@ final class MoveJatsAssets implements EventSubscriberInterface
     {
         $uri = uri_for($element->getAttribute('xlink:href') ?? '');
 
-        if ($element->baseURI && !$uri->getScheme()) {
+        if ($element->baseURI) {
             $uri = UriResolver::resolve(uri_for($element->baseURI), $uri);
         }
 
