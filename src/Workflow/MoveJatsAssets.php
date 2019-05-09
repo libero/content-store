@@ -21,7 +21,7 @@ use Symfony\Component\Workflow\Event\Event;
 use UnexpectedValueException;
 use function array_shift;
 use function count;
-use function GuzzleHttp\Promise\all;
+use function GuzzleHttp\Promise\each_limit_all;
 use function GuzzleHttp\Psr7\uri_for;
 use function implode;
 use function in_array;
@@ -41,6 +41,7 @@ final class MoveJatsAssets implements EventSubscriberInterface
     ];
 
     private $client;
+    private $concurrency;
     private $filesystem;
     private $origin;
     private $publicUri;
@@ -49,12 +50,14 @@ final class MoveJatsAssets implements EventSubscriberInterface
         string $origin,
         string $publicUri,
         FilesystemInterface $filesystem,
-        ClientInterface $client
+        ClientInterface $client,
+        int $concurrency = 10
     ) {
         $this->origin = $origin;
         $this->publicUri = $publicUri;
         $this->filesystem = $filesystem;
         $this->client = $client;
+        $this->concurrency = $concurrency;
     }
 
     public static function getSubscribedEvents() : array
@@ -69,25 +72,31 @@ final class MoveJatsAssets implements EventSubscriberInterface
         /** @var PutTask $task */
         $task = $event->getSubject();
 
-        $promises = [];
+        $assets = function (iterable $assets, PutTask $task) : iterable {
+            foreach ($assets as $asset) {
+                $uri = $this->elementUri($asset);
 
-        foreach ($this->findAssets($task->getDocument()) as $asset) {
-            $uri = $this->elementUri($asset);
+                if (!Uri::isAbsolute($uri) || 0 === preg_match($this->origin, (string) $uri)) {
+                    continue;
+                }
 
-            if (!Uri::isAbsolute($uri) || 0 === preg_match($this->origin, (string) $uri)) {
-                continue;
+                yield $this->client
+                    ->requestAsync('GET', $uri, ['http_errors' => true])
+                    ->then(
+                        function (ResponseInterface $response) use ($asset, $task) : array {
+                            return [$response, $asset, $task];
+                        }
+                    );
             }
+        };
 
-            $promises[] = $this->client
-                ->requestAsync('GET', $uri, ['http_errors' => true])
-                ->then(
-                    function (ResponseInterface $response) use ($asset, $task) {
-                        $this->handleResponse($response, $asset, $task);
-                    }
-                );
-        }
-
-        all($promises)->wait();
+        each_limit_all(
+            $assets($this->findAssets($task->getDocument()), $task),
+            $this->concurrency,
+            function (array $arguments) : void {
+                $this->handleResponse(...$arguments);
+            }
+        )->wait();
     }
 
     /**
