@@ -2,4 +2,4 @@ csa_guzzle:
     profiler: '%kernel.debug%'
     clients:
         asset_download: ~
-        s3:
+        s3: ~
