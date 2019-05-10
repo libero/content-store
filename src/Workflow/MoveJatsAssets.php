@@ -14,7 +14,6 @@ use League\Flysystem\AdapterInterface;
 use League\Flysystem\FilesystemInterface;
 use Libero\ContentApiBundle\Model\PutTask;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\UriInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\File\MimeType\ExtensionGuesser;
 use Symfony\Component\Workflow\Event\Event;
@@ -71,7 +70,7 @@ final class MoveJatsAssets implements EventSubscriberInterface
         $task = $event->getSubject();
 
         each_limit_all(
-            $this->findAssets($task->getDocument(), $task),
+            $this->processAssets($this->findLinkedElements($task->getDocument()), $task),
             $this->concurrency
         )->wait();
     }
@@ -79,41 +78,29 @@ final class MoveJatsAssets implements EventSubscriberInterface
     /**
      * @return iterable<Element>
      */
-    private function findAssets(Document $document, PutTask $task) : iterable
+    private function findLinkedElements(Document $document) : iterable
     {
         $document->registerNamespace('jats', 'http://jats.nlm.nih.gov');
         $document->registerNamespace('xlink', 'http://www.w3.org/1999/xlink');
 
-        /** @var iterable<Element> $assets */
-        $assets = $document('//jats:article//jats:*[@xlink:href]');
-
-        yield from $this->filterAssets($assets, $task);
+        yield from $document('//jats:article//jats:*[@xlink:href]');
     }
 
-    /**
-     * @param iterable<Element> $assets
-     *
-     * @return iterable<PromiseInterface>
-     */
-    private function filterAssets(iterable $assets, PutTask $task) : iterable
+    private function processAssets(iterable $elements, PutTask $task) : iterable
     {
-        foreach ($assets as $asset) {
-            $uri = element_uri($asset);
-
-            if (!Uri::isAbsolute($uri) || 0 === preg_match($this->origin, (string) $uri)) {
-                continue;
+        foreach ($elements as $element) {
+            if ($this->shouldProcess($element)) {
+                yield $this->processAsset($element, $task);
             }
-
-            yield $this->processAsset($asset, $task, $uri);
         }
     }
 
-    private function processAsset(Element $asset, PutTask $task, UriInterface $uri) : PromiseInterface
+    private function processAsset(Element $asset, PutTask $task) : PromiseInterface
     {
         return new Coroutine(
-            function () use ($asset, $task, $uri) : iterable {
+            function () use ($asset, $task) : iterable {
                 /** @var ResponseInterface $response */
-                $response = yield $this->client->requestAsync('GET', $uri);
+                $response = yield $this->client->requestAsync('GET', element_uri($asset));
 
                 $contentType = parse_media_type($response->getHeaderLine('Content-Type'));
                 /** @var resource $stream */
@@ -149,6 +136,13 @@ final class MoveJatsAssets implements EventSubscriberInterface
             $element->setAttribute('mimetype', $contentType[0]);
             $element->setAttribute('mime-subtype', $contentType[1]);
         }
+    }
+
+    private function shouldProcess(Element $element) : bool
+    {
+        $uri = element_uri($element);
+
+        return Uri::isAbsolute($uri) && preg_match($this->origin, (string) $uri);
     }
 
     /**
