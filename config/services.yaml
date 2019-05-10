@@ -18,3 +18,9 @@ services:
             - '%env(ASSETS_ORIGIN)%'
             - '%env(S3_PUBLIC_ENDPOINT)%'
             - '@oneup_flysystem.assets_filesystem'
+            - '@csa_guzzle.client.asset_download'
+
+    libero.content_store.s3_handler:
+        class: Aws\Handler\GuzzleV6\GuzzleHandler
+        arguments:
+            - '@csa_guzzle.client.s3'
