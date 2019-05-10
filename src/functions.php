@@ -19,7 +19,7 @@ use function preg_match;
  */
 function element_uri(Element $element) : UriInterface
 {
-    $uri = uri_for($element->getAttribute('xlink:href') ?? '');
+    $uri = uri_for($element->getAttributeNS('http://www.w3.org/1999/xlink', 'href') ?? '');
 
     if ($element->baseURI) {
         $uri = UriResolver::resolve(uri_for($element->baseURI), $uri);
