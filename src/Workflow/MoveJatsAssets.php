@@ -81,7 +81,7 @@ final class MoveJatsAssets implements EventSubscriberInterface
                 }
 
                 yield $this->client
-                    ->requestAsync('GET', $uri, ['http_errors' => true])
+                    ->requestAsync('GET', $uri)
                     ->then(
                         function (ResponseInterface $response) use ($asset, $task) : array {
                             return [$response, $asset, $task];
