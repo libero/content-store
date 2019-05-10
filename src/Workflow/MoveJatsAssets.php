@@ -7,9 +7,9 @@ namespace Libero\ContentStore\Workflow;
 use FluentDOM\DOM\Document;
 use FluentDOM\DOM\Element;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Promise\Coroutine;
+use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Uri;
-use GuzzleHttp\Psr7\UriNormalizer;
-use GuzzleHttp\Psr7\UriResolver;
 use League\Flysystem\AdapterInterface;
 use League\Flysystem\FilesystemInterface;
 use Libero\ContentApiBundle\Model\PutTask;
@@ -18,14 +18,12 @@ use Psr\Http\Message\UriInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\File\MimeType\ExtensionGuesser;
 use Symfony\Component\Workflow\Event\Event;
-use UnexpectedValueException;
-use function array_shift;
-use function count;
 use function GuzzleHttp\Promise\each_limit_all;
-use function GuzzleHttp\Psr7\uri_for;
 use function implode;
 use function in_array;
 use function Libero\ContentApiBundle\stream_hash;
+use function Libero\ContentStore\element_uri;
+use function Libero\ContentStore\parse_media_type;
 use function preg_match;
 use function sprintf;
 
@@ -72,37 +70,16 @@ final class MoveJatsAssets implements EventSubscriberInterface
         /** @var PutTask $task */
         $task = $event->getSubject();
 
-        $assets = function (iterable $assets, PutTask $task) : iterable {
-            foreach ($assets as $asset) {
-                $uri = $this->elementUri($asset);
-
-                if (!Uri::isAbsolute($uri) || 0 === preg_match($this->origin, (string) $uri)) {
-                    continue;
-                }
-
-                yield $this->client
-                    ->requestAsync('GET', $uri)
-                    ->then(
-                        function (ResponseInterface $response) use ($asset, $task) : array {
-                            return [$response, $asset, $task];
-                        }
-                    );
-            }
-        };
-
         each_limit_all(
-            $assets($this->findAssets($task->getDocument()), $task),
-            $this->concurrency,
-            function (array $arguments) : void {
-                $this->handleResponse(...$arguments);
-            }
+            $this->findAssets($task->getDocument(), $task),
+            $this->concurrency
         )->wait();
     }
 
     /**
      * @return iterable<Element>
      */
-    private function findAssets(Document $document) : iterable
+    private function findAssets(Document $document, PutTask $task) : iterable
     {
         $document->registerNamespace('jats', 'http://jats.nlm.nih.gov');
         $document->registerNamespace('xlink', 'http://www.w3.org/1999/xlink');
@@ -110,29 +87,50 @@ final class MoveJatsAssets implements EventSubscriberInterface
         /** @var iterable<Element> $assets */
         $assets = $document('//jats:article//jats:*[@xlink:href]');
 
-        return $assets;
+        yield from $this->filterAssets($assets, $task);
     }
 
-    private function elementUri(Element $element) : UriInterface
+    /**
+     * @param iterable<Element> $assets
+     *
+     * @return iterable<PromiseInterface>
+     */
+    private function filterAssets(iterable $assets, PutTask $task) : iterable
     {
-        $uri = uri_for($element->getAttribute('xlink:href') ?? '');
+        foreach ($assets as $asset) {
+            $uri = element_uri($asset);
 
-        if ($element->baseURI) {
-            $uri = UriResolver::resolve(uri_for($element->baseURI), $uri);
+            if (!Uri::isAbsolute($uri) || 0 === preg_match($this->origin, (string) $uri)) {
+                continue;
+            }
+
+            yield $this->processAsset($asset, $task, $uri);
         }
-
-        return UriNormalizer::normalize($uri);
     }
 
-    private function handleResponse(ResponseInterface $response, $asset, $task) : void
+    private function processAsset(Element $asset, PutTask $task, UriInterface $uri) : PromiseInterface
     {
-        $contentType = $this->parseMediaType($response->getHeaderLine('Content-Type'));
-        /** @var resource $stream */
-        $stream = $response->getBody()->detach();
-        $path = $this->pathFor($task, $contentType, $stream);
+        return new Coroutine(
+            function () use ($asset, $task, $uri) : iterable {
+                /** @var ResponseInterface $response */
+                $response = yield $this->client->requestAsync('GET', $uri);
 
-        $this->updateElement($asset, $contentType, $path);
+                $contentType = parse_media_type($response->getHeaderLine('Content-Type'));
+                /** @var resource $stream */
+                $stream = $response->getBody()->detach();
+                $path = $this->pathFor($task, $contentType, $stream);
 
+                $this->updateElement($asset, $contentType, $path);
+                $this->deployAsset($contentType, $stream, $path);
+            }
+        );
+    }
+
+    /**
+     * @param resource $stream
+     */
+    private function deployAsset(array $contentType, $stream, string $path) : void
+    {
         $this->filesystem->putStream(
             $path,
             $stream,
@@ -143,16 +141,14 @@ final class MoveJatsAssets implements EventSubscriberInterface
         );
     }
 
-    private function parseMediaType(string $mediaType) : array
+    private function updateElement(Element $element, array $contentType, string $path) : void
     {
-        preg_match('~^(.+?)/(.+?)(?:$|;)~', $mediaType, $contentType);
-        array_shift($contentType);
+        $element->setAttribute('xlink:href', sprintf('%s/%s', $this->publicUri, $path));
 
-        if (2 !== count($contentType)) {
-            throw new UnexpectedValueException('Invalid content-type provided');
+        if (in_array($element->localName, self::HAS_MIMETYPE_ATTRIBUTE, true)) {
+            $element->setAttribute('mimetype', $contentType[0]);
+            $element->setAttribute('mime-subtype', $contentType[1]);
         }
-
-        return $contentType;
     }
 
     /**
@@ -170,15 +166,5 @@ final class MoveJatsAssets implements EventSubscriberInterface
         }
 
         return $path;
-    }
-
-    private function updateElement(Element $element, array $contentType, string $path) : void
-    {
-        $element->setAttribute('xlink:href', sprintf('%s/%s', $this->publicUri, $path));
-
-        if (in_array($element->localName, self::HAS_MIMETYPE_ATTRIBUTE, true)) {
-            $element->setAttribute('mimetype', $contentType[0]);
-            $element->setAttribute('mime-subtype', $contentType[1]);
-        }
     }
 }

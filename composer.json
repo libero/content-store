@@ -4,6 +4,9 @@
     "type": "project",
     "license": "MIT",
     "autoload": {
+        "files": [
+            "src/functions.php"
+        ],
         "psr-4": {
             "Libero\\ContentStore\\": "src/"
         }
