@@ -4,6 +4,9 @@
     "type": "project",
     "license": "MIT",
     "autoload": {
+        "files": [
+            "src/functions.php"
+        ],
         "psr-4": {
             "Libero\\ContentStore\\": "src/"
         }
@@ -18,10 +21,17 @@
         "ext-ctype": "*",
         "ext-mbstring": "*",
         "ext-pdo_pgsql": "*",
+        "aws/aws-sdk-php-symfony": "^2.0",
+        "csa/guzzle-bundle": "^3.1",
         "doctrine/doctrine-bundle": "^1.10",
         "doctrine/doctrine-migrations-bundle": "^2.0",
+        "guzzlehttp/guzzle": "^6.3",
+        "guzzlehttp/psr7": "^1.5",
+        "league/flysystem": "^1.0",
+        "league/flysystem-aws-s3-v3": "^1.0",
         "libero/api-problem-bundle": "^0.2",
         "libero/content-api-bundle": "^0.1",
+        "oneup/flysystem-bundle": "^3.1",
         "symfony/config": "^4.2",
         "symfony/console": "^4.2",
         "symfony/dependency-injection": "^4.2",
@@ -36,6 +46,8 @@
         "symfony/yaml": "^4.2"
     },
     "require-dev": {
+        "csa/guzzle-cache-middleware": "^1.0",
+        "league/flysystem-memory": "^1.0",
         "libero/coding-standard": "^0.4",
         "phpstan/phpstan": "^0.11",
         "phpstan/phpstan-phpunit": "^0.11",
@@ -46,7 +58,8 @@
         "symfony/stopwatch": "^4.2",
         "symfony/twig-bundle": "^4.2",
         "symfony/web-profiler-bundle": "^4.2",
-        "thomasweinert/phpunit-xpath-assertions": "dev-master"
+        "thomasweinert/phpunit-xpath-assertions": "dev-master",
+        "twistor/flysystem-stream-wrapper": "^1.0"
     },
     "replace": {
         "symfony/polyfill-ctype": "*",

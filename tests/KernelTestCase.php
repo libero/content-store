@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace tests\Libero\ContentStore;
 
+use Csa\GuzzleHttp\Middleware\Cache\Adapter\MockStorageAdapter;
 use Libero\ContentApiBundle\Model\ItemId;
 use Libero\ContentApiBundle\Model\Items;
 use Libero\ContentApiBundle\Model\ItemVersion;
 use Libero\ContentApiBundle\Model\ItemVersionNumber;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase as BaseKernelTestCase;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
@@ -52,6 +55,14 @@ abstract class KernelTestCase extends BaseKernelTestCase
         }
 
         return new Response($content, $response->getStatusCode(), $response->headers->all());
+    }
+
+    final protected static function mockHttpResponse(RequestInterface $request, ResponseInterface $response) : void
+    {
+        /** @var MockStorageAdapter $mock */
+        $mock = static::$container->get('csa_guzzle.mock.storage');
+
+        $mock->save($request, $response);
     }
 
     private static function loadFixtures(Items $items) : void

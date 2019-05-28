@@ -1,0 +1,13 @@
+parameters:
+    env(S3_PREFIX): ~
+
+oneup_flysystem:
+    adapters:
+        assets_adapter:
+            awss3v3:
+                client: aws.s3
+                bucket: '%env(S3_BUCKET)%'
+                prefix: '%env(S3_PREFIX)%'
+    filesystems:
+        assets:
+            adapter: assets_adapter

@@ -1,0 +1,7 @@
+csa_guzzle:
+    logger:
+        service: monolog.logger.guzzle
+    profiler: '%kernel.debug%'
+    clients:
+        asset_download: ~
+        s3: ~

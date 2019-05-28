@@ -1,0 +1,13 @@
+parameters:
+    env(AWS_DEFAULT_REGION): 'us-east-1'
+    env(AWS_VERSION): '2006-03-01'
+    env(S3_ENDPOINT): ~
+    env(S3_PATH_STYLE_ENDPOINT): false
+
+aws:
+    http_handler: '@libero.content_store.s3_handler'
+    region: '%env(AWS_DEFAULT_REGION)%'
+    version: '%env(AWS_VERSION)%'
+    S3:
+        endpoint: '%env(S3_ENDPOINT)%'
+        use_path_style_endpoint: '%env(bool:S3_PATH_STYLE_ENDPOINT)%'
