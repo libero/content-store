@@ -76,7 +76,7 @@ final class MoveJatsAssetsTest extends TestCase
      */
     public function it_does_nothing_if_it_is_not_jats() : void
     {
-        $mover = new MoveJatsAssets('~.+~', 'http://public-assets/path', $this->filesystem, $this->client);
+        $mover = new MoveJatsAssets('.+', 'http://public-assets/path', $this->filesystem, $this->client);
 
         $document = FluentDOM::load('<item xmlns="http://libero.pub"/>');
 
@@ -97,7 +97,7 @@ final class MoveJatsAssetsTest extends TestCase
      */
     public function it_handles_assets() : void
     {
-        $mover = new MoveJatsAssets('~.+~', 'http://public-assets/path', $this->filesystem, $this->client);
+        $mover = new MoveJatsAssets('.+', 'http://public-assets/path', $this->filesystem, $this->client);
 
         $document = FluentDOM::load(
             <<<XML
@@ -236,7 +236,7 @@ XML
      */
     public function it_sets_metadata() : void
     {
-        $mover = new MoveJatsAssets('~.+~', 'http://public-assets/path', $this->filesystem, $this->client);
+        $mover = new MoveJatsAssets('.+', 'http://public-assets/path', $this->filesystem, $this->client);
 
         $document = FluentDOM::load(
             <<<XML
@@ -276,7 +276,7 @@ XML
     public function it_checks_the_origin_uri() : void
     {
         $mover = new MoveJatsAssets(
-            '~^http://origin-assets/assets/~',
+            '^http://origin-assets/assets/',
             'http://public-assets/path',
             $this->filesystem,
             $this->client
@@ -339,7 +339,7 @@ XML
      */
     public function it_fails_if_an_invalid_content_type_is_returned() : void
     {
-        $mover = new MoveJatsAssets('~.+~', 'http://public-assets/path', $this->filesystem, $this->client);
+        $mover = new MoveJatsAssets('.+', 'http://public-assets/path', $this->filesystem, $this->client);
 
         $document = FluentDOM::load(
             <<<XML

@@ -21,6 +21,7 @@ use function GuzzleHttp\Promise\each_limit_all;
 use function implode;
 use function in_array;
 use function Libero\ContentApiBundle\stream_hash;
+use function Libero\ContentStore\delimit_regex;
 use function Libero\ContentStore\element_uri;
 use function Libero\ContentStore\parse_media_type;
 use function preg_match;
@@ -50,7 +51,7 @@ final class MoveJatsAssets implements EventSubscriberInterface
         ClientInterface $client,
         int $concurrency = 10
     ) {
-        $this->originWhitelist = $originWhitelist;
+        $this->originWhitelist = delimit_regex($originWhitelist);
         $this->publicUri = $publicUri;
         $this->filesystem = $filesystem;
         $this->client = $client;

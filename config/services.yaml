@@ -1,5 +1,4 @@
 parameters:
-    env(ASSETS_ORIGIN_WHITELIST): '~.+~'
     env(DEFAULT_LOCALE): 'en'
     env(SERVICE_NAME): 'articles'
 

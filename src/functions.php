@@ -9,6 +9,7 @@ use GuzzleHttp\Psr7\UriNormalizer;
 use GuzzleHttp\Psr7\UriResolver;
 use Psr\Http\Message\UriInterface;
 use UnexpectedValueException;
+use function addcslashes;
 use function array_shift;
 use function count;
 use function GuzzleHttp\Psr7\uri_for;
@@ -41,4 +42,12 @@ function parse_media_type(string $mediaType) : array
     }
 
     return $contentType;
+}
+
+/**
+ * @internal
+ */
+function delimit_regex(string $regex) : string
+{
+    return '/'.addcslashes($regex, '/').'/';
 }
