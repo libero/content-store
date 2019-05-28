@@ -1,5 +1,5 @@
 csa_guzzle:
-    logger: '%kernel.debug%'
+    logger: true
     profiler: '%kernel.debug%'
     clients:
         asset_download: ~
