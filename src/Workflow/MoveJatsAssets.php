@@ -40,17 +40,17 @@ final class MoveJatsAssets implements EventSubscriberInterface
     private $client;
     private $concurrency;
     private $filesystem;
-    private $origin;
+    private $originWhitelist;
     private $publicUri;
 
     public function __construct(
-        string $origin,
+        string $originWhitelist,
         string $publicUri,
         FilesystemInterface $filesystem,
         ClientInterface $client,
         int $concurrency = 10
     ) {
-        $this->origin = $origin;
+        $this->originWhitelist = $originWhitelist;
         $this->publicUri = $publicUri;
         $this->filesystem = $filesystem;
         $this->client = $client;
@@ -142,7 +142,7 @@ final class MoveJatsAssets implements EventSubscriberInterface
     {
         $uri = element_uri($element);
 
-        return Uri::isAbsolute($uri) && preg_match($this->origin, (string) $uri);
+        return Uri::isAbsolute($uri) && preg_match($this->originWhitelist, (string) $uri);
     }
 
     /**

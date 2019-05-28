@@ -1,5 +1,5 @@
 parameters:
-    env(ASSETS_ORIGIN): '~.+~'
+    env(ASSETS_ORIGIN_WHITELIST): '~.+~'
     env(DEFAULT_LOCALE): 'en'
     env(SERVICE_NAME): 'articles'
 
@@ -15,8 +15,8 @@ services:
 
     Libero\ContentStore\Workflow\MoveJatsAssets:
         arguments:
-            - '%env(ASSETS_ORIGIN)%'
-            - '%env(S3_PUBLIC_ENDPOINT)%'
+            - '%env(ASSETS_ORIGIN_WHITELIST)%'
+            - '%env(ASSETS_PUBLIC_URI)%'
             - '@oneup_flysystem.assets_filesystem'
             - '@csa_guzzle.client.asset_download'
 

@@ -83,8 +83,8 @@ final class ContentServiceTest extends KernelTestCase
      */
     public function it_adds_an_item() : void
     {
-        $_ENV['ASSETS_ORIGIN'] = '~.+~';
-        $_ENV['S3_PUBLIC_ENDPOINT'] = 'http://public-assets/path';
+        $_ENV['ASSETS_ORIGIN_WHITELIST'] = '~.+~';
+        $_ENV['ASSETS_PUBLIC_URI'] = 'http://public-assets/path';
 
         self::bootKernel();
 
