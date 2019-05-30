@@ -222,7 +222,7 @@ XML
 
         $files = array_filter(
             $this->filesystem->listContents('', true),
-            function (array $item) : bool {
+            static function (array $item) : bool {
                 return 'file' === $item['type'];
             }
         );
