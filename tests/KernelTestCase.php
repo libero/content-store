@@ -68,7 +68,7 @@ abstract class KernelTestCase extends BaseKernelTestCase
     private static function loadFixtures(Items $items) : void
     {
         $fixtures = array_map(
-            function (SplFileInfo $fixture) : ItemVersion {
+            static function (SplFileInfo $fixture) : ItemVersion {
                 /** @var resource $contents */
                 $contents = fopen($fixture->getPathname(), 'rb');
 
@@ -84,7 +84,7 @@ abstract class KernelTestCase extends BaseKernelTestCase
 
         usort(
             $fixtures,
-            function (ItemVersion $a, ItemVersion $b) : int {
+            static function (ItemVersion $a, ItemVersion $b) : int {
                 return $a->getVersion() <=> $b->getVersion();
             }
         );
