@@ -13,17 +13,16 @@ use GuzzleHttp\Psr7\Uri;
 use League\Flysystem\AdapterInterface;
 use League\Flysystem\FilesystemInterface;
 use Libero\ContentApiBundle\Model\PutTask;
+use Libero\MediaType\MediaType;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\File\MimeType\ExtensionGuesser;
 use Symfony\Component\Workflow\Event\Event;
 use function GuzzleHttp\Promise\each_limit_all;
-use function implode;
 use function in_array;
 use function Libero\ContentApiBundle\stream_hash;
 use function Libero\ContentStore\delimit_regex;
 use function Libero\ContentStore\element_uri;
-use function Libero\ContentStore\parse_media_type;
 use function preg_match;
 use function sprintf;
 
@@ -103,7 +102,7 @@ final class MoveJatsAssets implements EventSubscriberInterface
                 /** @var ResponseInterface $response */
                 $response = yield $this->client->requestAsync('GET', element_uri($asset));
 
-                $contentType = parse_media_type($response->getHeaderLine('Content-Type'));
+                $contentType = MediaType::fromString($response->getHeaderLine('Content-Type'));
                 /** @var resource $stream */
                 $stream = $response->getBody()->detach();
                 $path = $this->pathFor($task, $contentType, $stream);
@@ -117,25 +116,25 @@ final class MoveJatsAssets implements EventSubscriberInterface
     /**
      * @param resource $stream
      */
-    private function deployAsset(array $contentType, $stream, string $path) : void
+    private function deployAsset(MediaType $contentType, $stream, string $path) : void
     {
         $this->filesystem->putStream(
             $path,
             $stream,
             [
-                'mimetype' => implode('/', $contentType),
+                'mimetype' => (string) $contentType,
                 'visibility' => AdapterInterface::VISIBILITY_PUBLIC,
             ]
         );
     }
 
-    private function updateElement(Element $element, array $contentType, string $path) : void
+    private function updateElement(Element $element, MediaType $contentType, string $path) : void
     {
         $element->setAttribute('xlink:href', sprintf('%s/%s', $this->publicUri, $path));
 
         if (in_array($element->localName, self::HAS_MIMETYPE_ATTRIBUTE, true)) {
-            $element->setAttribute('mimetype', $contentType[0]);
-            $element->setAttribute('mime-subtype', $contentType[1]);
+            $element->setAttribute('mimetype', $contentType->getType());
+            $element->setAttribute('mime-subtype', $contentType->getSubType());
         }
     }
 
@@ -149,13 +148,13 @@ final class MoveJatsAssets implements EventSubscriberInterface
     /**
      * @param resource $stream
      */
-    private function pathFor(PutTask $task, array $contentType, $stream) : string
+    private function pathFor(PutTask $task, MediaType $contentType, $stream) : string
     {
         $hash = stream_hash($stream);
 
         $path = sprintf('%s/v%s/%s', $task->getItemId(), $task->getItemVersion(), $hash);
 
-        $extension = ExtensionGuesser::getInstance()->guess(implode('/', $contentType));
+        $extension = ExtensionGuesser::getInstance()->guess($contentType->getEssence());
         if ($extension) {
             $path .= ".{$extension}";
         }

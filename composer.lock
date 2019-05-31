@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b2c28b7c45e6da72d8697717054c7112",
+    "content-hash": "24880e5f239593a53a09fad5a5112757",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -1860,6 +1860,61 @@
             ],
             "description": "Implements the Libero content API",
             "time": "2019-05-02T12:14:20+00:00"
+        },
+        {
+            "name": "libero/media-type",
+            "version": "dev-media-type",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thewilkybarkid/media-type.git",
+                "reference": "d5fb653bfa53de1bf46a2ee6ef88112745e6a42e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thewilkybarkid/media-type/zipball/d5fb653bfa53de1bf46a2ee6ef88112745e6a42e",
+                "reference": "d5fb653bfa53de1bf46a2ee6ef88112745e6a42e",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2",
+                "symfony/polyfill-mbstring": "^1.0"
+            },
+            "require-dev": {
+                "daverandom/exceptional-json": "^1.0",
+                "libero/coding-standard": "^0.5",
+                "phpstan/phpstan": "^0.11",
+                "phpstan/phpstan-phpunit": "^0.11",
+                "phpunit/phpunit": "^8.1",
+                "symfony/filesystem": "^4.3",
+                "symfony/finder": "^4.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Libero\\MediaType\\": "src/"
+                },
+                "files": [
+                    "src/functions.php"
+                ]
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "tests\\Libero\\MediaType\\": "tests/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Media Type",
+            "support": {
+                "source": "https://github.com/thewilkybarkid/media-type/tree/media-type"
+            },
+            "time": "2019-05-31T14:07:43+00:00"
         },
         {
             "name": "libero/ping-controller",
@@ -4538,23 +4593,23 @@
         },
         {
             "name": "league/flysystem-memory",
-            "version": "1.0.1",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem-memory.git",
-                "reference": "1cabecd08a8caec92a96a953c0d93b5ce83b07a2"
+                "reference": "d0e87477c32e29f999b4de05e64c1adcddb51757"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem-memory/zipball/1cabecd08a8caec92a96a953c0d93b5ce83b07a2",
-                "reference": "1cabecd08a8caec92a96a953c0d93b5ce83b07a2",
+                "url": "https://api.github.com/repos/thephpleague/flysystem-memory/zipball/d0e87477c32e29f999b4de05e64c1adcddb51757",
+                "reference": "d0e87477c32e29f999b4de05e64c1adcddb51757",
                 "shasum": ""
             },
             "require": {
                 "league/flysystem": "~1.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "~4.1"
+                "phpunit/phpunit": "^5.7.10"
             },
             "type": "library",
             "extra": {
@@ -4585,7 +4640,7 @@
                 "adapter",
                 "memory"
             ],
-            "time": "2016-06-04T03:57:11+00:00"
+            "time": "2019-05-30T21:34:13+00:00"
         },
         {
             "name": "libero/coding-standard",
@@ -7340,6 +7395,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "libero/media-type": 20,
         "thomasweinert/phpunit-xpath-assertions": 20
     },
     "prefer-stable": false,

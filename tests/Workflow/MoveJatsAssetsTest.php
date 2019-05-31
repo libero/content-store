@@ -21,12 +21,12 @@ use Libero\ContentApiBundle\Model\ItemId;
 use Libero\ContentApiBundle\Model\ItemVersionNumber;
 use Libero\ContentApiBundle\Model\PutTask;
 use Libero\ContentStore\Workflow\MoveJatsAssets;
+use Libero\MediaType\Exception\InvalidMediaType;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Workflow\Event\Event;
 use Symfony\Component\Workflow\Marking;
 use Symfony\Component\Workflow\Transition;
 use Twistor\FlysystemStreamWrapper;
-use UnexpectedValueException;
 use function array_filter;
 
 final class MoveJatsAssetsTest extends TestCase
@@ -267,7 +267,7 @@ XML
 
         $this->assertSame('figure1', $this->filesystem->read($path));
         $this->assertSame(AdapterInterface::VISIBILITY_PUBLIC, $this->filesystem->getVisibility($path));
-        $this->assertSame('image/jpeg', $this->filesystem->getMimetype($path));
+        $this->assertSame('image/jpeg;foo=bar', $this->filesystem->getMimetype($path));
     }
 
     /**
@@ -364,8 +364,7 @@ XML
             new Response(200, ['Content-Type' => 'foo'], 'figure')
         );
 
-        $this->expectException(UnexpectedValueException::class);
-        $this->expectExceptionMessage('Invalid content-type provided');
+        $this->expectException(InvalidMediaType::class);
 
         $mover->onManipulate($event);
     }

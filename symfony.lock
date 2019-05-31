@@ -131,6 +131,9 @@
     "libero/content-api-bundle": {
         "version": "v0.1.1"
     },
+    "libero/media-type": {
+        "version": "1.0.x-dev"
+    },
     "libero/ping-controller": {
         "version": "v0.1.0"
     },

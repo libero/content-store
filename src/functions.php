@@ -8,12 +8,8 @@ use FluentDOM\DOM\Element;
 use GuzzleHttp\Psr7\UriNormalizer;
 use GuzzleHttp\Psr7\UriResolver;
 use Psr\Http\Message\UriInterface;
-use UnexpectedValueException;
 use function addcslashes;
-use function array_shift;
-use function count;
 use function GuzzleHttp\Psr7\uri_for;
-use function preg_match;
 
 /**
  * @internal
@@ -27,21 +23,6 @@ function element_uri(Element $element) : UriInterface
     }
 
     return UriNormalizer::normalize($uri);
-}
-
-/**
- * @internal
- */
-function parse_media_type(string $mediaType) : array
-{
-    preg_match('~^(.+?)/(.+?)(?:$|;)~', $mediaType, $contentType);
-    array_shift($contentType);
-
-    if (2 !== count($contentType)) {
-        throw new UnexpectedValueException('Invalid content-type provided');
-    }
-
-    return $contentType;
 }
 
 /**
