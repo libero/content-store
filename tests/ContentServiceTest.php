@@ -142,7 +142,7 @@ XML
         <service>articles</service>
     </meta>
     <article xmlns="http://jats.nlm.nih.gov" xmlns:xlink="http://www.w3.org/1999/xlink"
-        xml:base="http://origin-assets/new-article/">
+        xml:base="http://origin-assets/new-article">
         <front>
             <article-meta>
                 <title-group>
