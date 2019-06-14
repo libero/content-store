@@ -17,7 +17,9 @@ use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\File\MimeType\ExtensionGuesser;
 use Symfony\Component\Workflow\Event\Event;
+use UnexpectedValueException;
 use function GuzzleHttp\Promise\each_limit_all;
+use function GuzzleHttp\Psr7\mimetype_from_filename;
 use function implode;
 use function in_array;
 use function Libero\ContentApiBundle\stream_hash;
@@ -101,9 +103,24 @@ final class MoveJatsAssets implements EventSubscriberInterface
         return new Coroutine(
             function () use ($asset, $task) : iterable {
                 /** @var ResponseInterface $response */
-                $response = yield $this->client->requestAsync('GET', element_uri($asset));
+                $response = yield $this->client->requestAsync('GET', $uri = element_uri($asset));
 
-                $contentType = parse_media_type($response->getHeaderLine('Content-Type'));
+                try {
+                    $contentType = parse_media_type($response->getHeaderLine('Content-Type'));
+
+                    if ('octet-stream' === $contentType[1]) {
+                        unset($contentType);
+                    }
+                } catch (UnexpectedValueException $e) {
+                    // Do nothing.
+                }
+
+                if (!isset($contentType)) {
+                    $contentType = parse_media_type(
+                        mimetype_from_filename((string) $uri) ?? $response->getHeaderLine('Content-Type')
+                    );
+                }
+
                 /** @var resource $stream */
                 $stream = $response->getBody()->detach();
                 $path = $this->pathFor($task, $contentType, $stream);
