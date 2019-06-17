@@ -14,10 +14,13 @@ use League\Flysystem\AdapterInterface;
 use League\Flysystem\FilesystemInterface;
 use Libero\ContentApiBundle\Model\PutTask;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\UriInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\File\MimeType\ExtensionGuesser;
 use Symfony\Component\Workflow\Event\Event;
+use UnexpectedValueException;
 use function GuzzleHttp\Promise\each_limit_all;
+use function GuzzleHttp\Psr7\mimetype_from_filename;
 use function implode;
 use function in_array;
 use function Libero\ContentApiBundle\stream_hash;
@@ -29,6 +32,10 @@ use function sprintf;
 
 final class MoveJatsAssets implements EventSubscriberInterface
 {
+    private const IGNORE_CONTENT_TYPES = [
+        'application/octet-stream',
+        'binary/octet-stream',
+    ];
     private const HAS_MIMETYPE_ATTRIBUTE = [
         'graphic',
         'inline-graphic',
@@ -101,9 +108,9 @@ final class MoveJatsAssets implements EventSubscriberInterface
         return new Coroutine(
             function () use ($asset, $task) : iterable {
                 /** @var ResponseInterface $response */
-                $response = yield $this->client->requestAsync('GET', element_uri($asset));
+                $response = yield $this->client->requestAsync('GET', $uri = element_uri($asset));
 
-                $contentType = parse_media_type($response->getHeaderLine('Content-Type'));
+                $contentType = $this->contentTypeFor($uri, $response);
                 /** @var resource $stream */
                 $stream = $response->getBody()->detach();
                 $path = $this->pathFor($task, $contentType, $stream);
@@ -161,5 +168,22 @@ final class MoveJatsAssets implements EventSubscriberInterface
         }
 
         return $path;
+    }
+
+    private function contentTypeFor(UriInterface $uri, ResponseInterface $response) : array
+    {
+        try {
+            $contentType = parse_media_type($response->getHeaderLine('Content-Type'));
+
+            if (in_array(implode('/', $contentType), self::IGNORE_CONTENT_TYPES, true)) {
+                throw new UnexpectedValueException('Ignored type');
+            }
+        } catch (UnexpectedValueException $e) {
+            $contentType = parse_media_type(
+                mimetype_from_filename((string) $uri) ?? $response->getHeaderLine('Content-Type')
+            );
+        }
+
+        return $contentType;
     }
 }
