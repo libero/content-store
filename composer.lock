@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "24880e5f239593a53a09fad5a5112757",
+    "content-hash": "bce39b105a058ab0ea9c38afbd42860c",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -1863,16 +1863,16 @@
         },
         {
             "name": "libero/media-type",
-            "version": "dev-media-type",
+            "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/thewilkybarkid/media-type.git",
-                "reference": "d5fb653bfa53de1bf46a2ee6ef88112745e6a42e"
+                "url": "https://github.com/libero/media-type.git",
+                "reference": "79f1f5081f1ea7e31a4f962a09109b6fc7b9420c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thewilkybarkid/media-type/zipball/d5fb653bfa53de1bf46a2ee6ef88112745e6a42e",
-                "reference": "d5fb653bfa53de1bf46a2ee6ef88112745e6a42e",
+                "url": "https://api.github.com/repos/libero/media-type/zipball/79f1f5081f1ea7e31a4f962a09109b6fc7b9420c",
+                "reference": "79f1f5081f1ea7e31a4f962a09109b6fc7b9420c",
                 "shasum": ""
             },
             "require": {
@@ -1902,19 +1902,12 @@
                     "src/functions.php"
                 ]
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "tests\\Libero\\MediaType\\": "tests/"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Media Type",
-            "support": {
-                "source": "https://github.com/thewilkybarkid/media-type/tree/media-type"
-            },
-            "time": "2019-05-31T14:07:43+00:00"
+            "time": "2019-06-24T10:44:14+00:00"
         },
         {
             "name": "libero/ping-controller",
