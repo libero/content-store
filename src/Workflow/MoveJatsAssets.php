@@ -21,11 +21,11 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\File\MimeType\ExtensionGuesser;
 use Symfony\Component\Workflow\Event\Event;
 use function GuzzleHttp\Promise\each_limit_all;
-use function GuzzleHttp\Psr7\mimetype_from_filename;
 use function in_array;
 use function Libero\ContentApiBundle\stream_hash;
 use function Libero\ContentStore\delimit_regex;
 use function Libero\ContentStore\element_uri;
+use function Libero\ContentStore\guess_media_type;
 use function preg_match;
 use function sprintf;
 
@@ -173,14 +173,12 @@ final class MoveJatsAssets implements EventSubscriberInterface
     {
         try {
             $contentType = MediaType::fromString($response->getHeaderLine('Content-Type'));
-
-            if (in_array($contentType->getEssence(), self::IGNORE_CONTENT_TYPES, true)) {
-                throw new InvalidMediaType('Ignored type');
-            }
         } catch (InvalidMediaType $e) {
-            $contentType = MediaType::fromString(
-                mimetype_from_filename((string) $uri) ?? $response->getHeaderLine('Content-Type')
-            );
+            return guess_media_type($uri);
+        }
+
+        if (in_array($contentType->getEssence(), self::IGNORE_CONTENT_TYPES, true)) {
+            return $this->contentTypeFor($uri, $response->withoutHeader('Content-Type'));
         }
 
         return $contentType;

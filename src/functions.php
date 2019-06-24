@@ -7,9 +7,13 @@ namespace Libero\ContentStore;
 use FluentDOM\DOM\Element;
 use GuzzleHttp\Psr7\UriNormalizer;
 use GuzzleHttp\Psr7\UriResolver;
+use Libero\MediaType\Exception\InvalidMediaType;
+use Libero\MediaType\MediaType;
 use Psr\Http\Message\UriInterface;
 use function addcslashes;
+use function GuzzleHttp\Psr7\mimetype_from_filename;
 use function GuzzleHttp\Psr7\uri_for;
+use function is_string;
 
 /**
  * @internal
@@ -31,4 +35,18 @@ function element_uri(Element $element) : UriInterface
 function delimit_regex(string $regex) : string
 {
     return '/'.addcslashes($regex, '/').'/';
+}
+
+/**
+ * @internal
+ */
+function guess_media_type(UriInterface $uri) : MediaType
+{
+    $guessed = mimetype_from_filename((string) $uri);
+
+    if (!is_string($guessed)) {
+        throw new InvalidMediaType('Unable to guess a type');
+    }
+
+    return MediaType::fromString($guessed);
 }
