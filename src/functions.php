@@ -32,14 +32,6 @@ function element_uri(Element $element) : UriInterface
 /**
  * @internal
  */
-function delimit_regex(string $regex) : string
-{
-    return '/'.addcslashes($regex, '/').'/';
-}
-
-/**
- * @internal
- */
 function guess_media_type(UriInterface $uri) : MediaType
 {
     $guessed = mimetype_from_filename((string) $uri);
@@ -49,4 +41,12 @@ function guess_media_type(UriInterface $uri) : MediaType
     }
 
     return MediaType::fromString($guessed);
+}
+
+/**
+ * @internal
+ */
+function delimit_regex(string $regex) : string
+{
+    return '/'.addcslashes($regex, '/').'/';
 }
