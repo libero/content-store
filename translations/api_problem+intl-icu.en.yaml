@@ -1,0 +1,7 @@
+libero.content_store:
+    asset_deploy_failed:
+        title: Failed to deploy asset
+        details: Failed to deploy {asset} to {target}.
+    asset_load_failed:
+        title: Failed to load asset
+        details: Failed to load {asset} due to "{reason}".

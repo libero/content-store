@@ -7,12 +7,15 @@ namespace Libero\ContentStore\Workflow;
 use FluentDOM\DOM\Document;
 use FluentDOM\DOM\Element;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Promise\Coroutine;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Uri;
 use League\Flysystem\AdapterInterface;
 use League\Flysystem\FilesystemInterface;
 use Libero\ContentApiBundle\Model\PutTask;
+use Libero\ContentStore\Exception\AssetDeployFailed;
+use Libero\ContentStore\Exception\AssetLoadFailed;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -21,6 +24,7 @@ use Symfony\Component\Workflow\Event\Event;
 use UnexpectedValueException;
 use function GuzzleHttp\Promise\each_limit_all;
 use function GuzzleHttp\Psr7\mimetype_from_filename;
+use function GuzzleHttp\Psr7\uri_for;
 use function implode;
 use function in_array;
 use function Libero\ContentApiBundle\stream_hash;
@@ -107,8 +111,14 @@ final class MoveJatsAssets implements EventSubscriberInterface
     {
         return new Coroutine(
             function () use ($asset, $task) : iterable {
-                /** @var ResponseInterface $response */
-                $response = yield $this->client->requestAsync('GET', $uri = element_uri($asset));
+                $uri = element_uri($asset);
+
+                try {
+                    /** @var ResponseInterface $response */
+                    $response = yield $this->client->requestAsync('GET', $uri);
+                } catch (GuzzleException $e) {
+                    throw AssetLoadFailed::fromException($uri, $e);
+                }
 
                 $contentType = $this->contentTypeFor($uri, $response);
                 /** @var resource $stream */
@@ -116,7 +126,7 @@ final class MoveJatsAssets implements EventSubscriberInterface
                 $path = $this->pathFor($task, $contentType, $stream);
 
                 $this->updateElement($asset, $contentType, $path);
-                $this->deployAsset($contentType, $stream, $path);
+                $this->deployAsset($contentType, $stream, $path, $uri);
             }
         );
     }
@@ -124,9 +134,9 @@ final class MoveJatsAssets implements EventSubscriberInterface
     /**
      * @param resource $stream
      */
-    private function deployAsset(array $contentType, $stream, string $path) : void
+    private function deployAsset(array $contentType, $stream, UriInterface $path, UriInterface $origin) : void
     {
-        $this->filesystem->putStream(
+        $result = $this->filesystem->putStream(
             $path,
             $stream,
             [
@@ -134,9 +144,15 @@ final class MoveJatsAssets implements EventSubscriberInterface
                 'visibility' => AdapterInterface::VISIBILITY_PUBLIC,
             ]
         );
+
+        if (true === $result) {
+            return;
+        }
+
+        throw new AssetDeployFailed($origin, $path);
     }
 
-    private function updateElement(Element $element, array $contentType, string $path) : void
+    private function updateElement(Element $element, array $contentType, UriInterface $path) : void
     {
         $element->setAttribute('xlink:href', sprintf('%s/%s', $this->publicUri, $path));
 
@@ -156,7 +172,7 @@ final class MoveJatsAssets implements EventSubscriberInterface
     /**
      * @param resource $stream
      */
-    private function pathFor(PutTask $task, array $contentType, $stream) : string
+    private function pathFor(PutTask $task, array $contentType, $stream) : UriInterface
     {
         $hash = stream_hash($stream);
 
@@ -167,7 +183,7 @@ final class MoveJatsAssets implements EventSubscriberInterface
             $path .= ".{$extension}";
         }
 
-        return $path;
+        return uri_for($path);
     }
 
     private function contentTypeFor(UriInterface $uri, ResponseInterface $response) : array

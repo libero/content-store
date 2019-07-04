@@ -12,6 +12,13 @@ services:
         resource: '../src/*'
         exclude: '../src/{functions.php,Kernel.php}'
 
+    Libero\ContentStore\EventListener\:
+        resource: '../src/EventListener/*'
+        tags:
+            - name: kernel.event_listener
+              event: libero.api_problem.create
+              method: onCreateApiProblem
+
     Libero\ContentStore\Workflow\MoveJatsAssets:
         arguments:
             - '%env(ASSETS_ORIGIN_WHITELIST)%'
