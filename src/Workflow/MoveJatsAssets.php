@@ -16,6 +16,8 @@ use League\Flysystem\FilesystemInterface;
 use Libero\ContentApiBundle\Model\PutTask;
 use Libero\ContentStore\Exception\AssetDeployFailed;
 use Libero\ContentStore\Exception\AssetLoadFailed;
+use Libero\ContentStore\Exception\InvalidContentType;
+use Libero\ContentStore\Exception\UnknownContentType;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -188,6 +190,8 @@ final class MoveJatsAssets implements EventSubscriberInterface
 
     private function contentTypeFor(UriInterface $uri, ResponseInterface $response) : array
     {
+        $rawType = $response->getHeaderLine('Content-Type');
+
         try {
             $contentType = parse_media_type($response->getHeaderLine('Content-Type'));
 
@@ -195,9 +199,12 @@ final class MoveJatsAssets implements EventSubscriberInterface
                 throw new UnexpectedValueException('Ignored type');
             }
         } catch (UnexpectedValueException $e) {
-            $contentType = parse_media_type(
-                mimetype_from_filename((string) $uri) ?? $response->getHeaderLine('Content-Type')
-            );
+            try {
+                $rawType = mimetype_from_filename((string) $uri) ?? $response->getHeaderLine('Content-Type');
+                $contentType = parse_media_type($rawType);
+            } catch (UnexpectedValueException $e) {
+                throw $rawType ? new InvalidContentType($rawType, $uri, $e) : new UnknownContentType($uri, $e);
+            }
         }
 
         return $contentType;

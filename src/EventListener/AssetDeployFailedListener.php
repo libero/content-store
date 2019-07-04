@@ -35,7 +35,7 @@ final class AssetDeployFailedListener
 
     protected function titleTranslation(CreateApiProblem $event) : TranslationRequest
     {
-        return new TranslationRequest('libero.content_store.asset_deploy_failed.title');
+        return new TranslationRequest('libero.content_store.asset.deploy_failed.title');
     }
 
     protected function detailsTranslation(CreateApiProblem $event) : ?TranslationRequest
@@ -44,7 +44,7 @@ final class AssetDeployFailedListener
         $exception = $event->getException();
 
         return new TranslationRequest(
-            'libero.content_store.asset_deploy_failed.details',
+            'libero.content_store.asset.deploy_failed.details',
             ['asset' => $exception->getFrom(), 'target' => $exception->getTo()]
         );
     }

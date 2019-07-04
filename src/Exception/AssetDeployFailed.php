@@ -21,12 +21,12 @@ class AssetDeployFailed extends UnexpectedValueException
         $this->to = $to;
     }
 
-    public function getFrom() : UriInterface
+    final public function getFrom() : UriInterface
     {
         return $this->from;
     }
 
-    public function getTo() : UriInterface
+    final public function getTo() : UriInterface
     {
         return $this->to;
     }

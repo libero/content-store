@@ -1,7 +1,15 @@
 libero.content_store:
-    asset_deploy_failed:
-        title: Failed to deploy asset
-        details: Failed to deploy {asset} to {target}.
-    asset_load_failed:
-        title: Failed to load asset
-        details: Failed to load {asset} due to "{reason}".
+    asset:
+        deploy_failed:
+            title: Failed to deploy asset
+            details: Failed to deploy {asset} to {target}.
+        load_failed:
+            title: Failed to load asset
+            details: Failed to load {asset} due to "{reason}".
+    content_type:
+        invalid:
+            title: Invalid Content-Type
+            details: '"{content-type}" from {uri} is an invalid Content-Type.'
+        unknown:
+            title: Unknown Content-Type
+            details: '{uri} does not have a Content-Type.'

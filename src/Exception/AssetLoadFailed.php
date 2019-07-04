@@ -22,7 +22,7 @@ class AssetLoadFailed extends UnexpectedValueException
         $this->reason = $reason;
     }
 
-    public static function fromException(UriInterface $asset, Throwable $previous) : AssetLoadFailed
+    final public static function fromException(UriInterface $asset, Throwable $previous) : AssetLoadFailed
     {
         if ($previous instanceof RequestException && $response = $previous->getResponse()) {
             $reason = "{$response->getStatusCode()} {$response->getReasonPhrase()}";
@@ -31,12 +31,12 @@ class AssetLoadFailed extends UnexpectedValueException
         return new AssetLoadFailed($asset, $reason ?? $previous->getMessage(), $previous);
     }
 
-    public function getAsset() : UriInterface
+    final public function getAsset() : UriInterface
     {
         return $this->asset;
     }
 
-    public function getReason() : string
+    final public function getReason() : string
     {
         return $this->reason;
     }
