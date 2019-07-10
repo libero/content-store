@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Libero\ContentStore\Workflow;
+namespace Libero\JatsContentWorkflow\Workflow;
 
 use FluentDOM\DOM\Document;
 use FluentDOM\DOM\Element;
@@ -17,19 +17,18 @@ use Libero\MediaType\Exception\InvalidMediaType;
 use Libero\MediaType\MediaType;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\File\MimeType\ExtensionGuesser;
 use Symfony\Component\Workflow\Event\Event;
 use function GuzzleHttp\Promise\each_limit_all;
 use function in_array;
 use function Libero\ContentApiBundle\stream_hash;
-use function Libero\ContentStore\delimit_regex;
-use function Libero\ContentStore\element_uri;
-use function Libero\ContentStore\guess_media_type;
+use function Libero\JatsContentWorkflow\delimit_regex;
+use function Libero\JatsContentWorkflow\element_uri;
+use function Libero\JatsContentWorkflow\guess_media_type;
 use function preg_match;
 use function sprintf;
 
-final class MoveJatsAssets implements EventSubscriberInterface
+final class MoveJatsAssets
 {
     private const IGNORE_CONTENT_TYPES = [
         'application/octet-stream',
@@ -62,13 +61,6 @@ final class MoveJatsAssets implements EventSubscriberInterface
         $this->filesystem = $filesystem;
         $this->client = $client;
         $this->concurrency = $concurrency;
-    }
-
-    public static function getSubscribedEvents() : array
-    {
-        return [
-            'workflow.libero.content_store.put.transition.manipulate' => 'onManipulate',
-        ];
     }
 
     public function onManipulate(Event $event) : void

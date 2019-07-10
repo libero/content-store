@@ -7,6 +7,7 @@ COPY composer.json \
     composer.lock \
     symfony.lock \
     ./
+COPY vendor-extra/ vendor-extra/
 
 RUN composer --no-interaction install --no-dev --ignore-platform-reqs --no-autoloader --no-suggest --prefer-dist
 
@@ -48,9 +49,12 @@ COPY src/ src/
 COPY public/ public/
 COPY config/ config/
 COPY --from=composer /app/vendor/ vendor/
+COPY vendor-extra/ vendor-extra/
 
 USER www-data
 HEALTHCHECK --interval=5s CMD sh -c 'nc -z localhost 9000'
+ARG revision
+LABEL org.opencontainers.image.revision=${revision}
 
 
 
