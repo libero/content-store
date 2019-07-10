@@ -19,9 +19,9 @@ services:
             - '@oneup_flysystem.assets_filesystem'
             - '@csa_guzzle.client.asset_download'
         tags:
-            -   name: 'kernel.event_listener'
-                event: 'workflow.libero.content_store.put.transition.manipulate'
-                method: 'onManipulate'
+            - name: 'kernel.event_listener'
+              event: 'workflow.libero.content_store.put.transition.manipulate'
+              method: 'onManipulate'
 
     libero.content_store.s3_handler:
         class: Aws\Handler\GuzzleV6\GuzzleHandler
