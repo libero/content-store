@@ -27,7 +27,6 @@
         "libero/api-problem-bundle": "^0.2",
         "libero/content-api-bundle": "^0.1",
         "libero/jats-content-workflow": "^1.0@dev",
-        "libero/media-type": "^1.0@dev",
         "oneup/flysystem-bundle": "^3.1",
         "symfony/config": "^4.2",
         "symfony/console": "^4.2",

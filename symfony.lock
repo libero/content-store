@@ -135,7 +135,7 @@
         "version": "1.0.x-dev"
     },
     "libero/media-type": {
-        "version": "1.0.x-dev"
+        "version": "v0.1.0"
     },
     "libero/ping-controller": {
         "version": "v0.1.0"

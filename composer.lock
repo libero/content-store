@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b751e077be093f697ca9b9b18e2cee6a",
+    "content-hash": "b3e907e177813df1758aaf60a75297d0",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -1867,7 +1867,7 @@
             "dist": {
                 "type": "path",
                 "url": "./vendor-extra/JatsContentWorkflow",
-                "reference": "10c0920824567d959d86c75c82c098e389637506"
+                "reference": "d4aeba6abca38367dc43128493815a89a1333ee8"
             },
             "require": {
                 "fluentdom/fluentdom": "^7.0",
@@ -1876,7 +1876,7 @@
                 "guzzlehttp/psr7": "^1.5",
                 "league/flysystem": "^1.0",
                 "libero/content-api-bundle": "^0.1",
-                "libero/media-type": "^1.0@dev",
+                "libero/media-type": "^0.1",
                 "php": "^7.2",
                 "psr/http-message": "^1.0",
                 "symfony/http-foundation": "^4.2",
@@ -1903,7 +1903,7 @@
         },
         {
             "name": "libero/media-type",
-            "version": "dev-master",
+            "version": "v0.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/libero/media-type.git",
@@ -7429,7 +7429,6 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "libero/jats-content-workflow": 20,
-        "libero/media-type": 20,
         "thomasweinert/phpunit-xpath-assertions": 20
     },
     "prefer-stable": false,
