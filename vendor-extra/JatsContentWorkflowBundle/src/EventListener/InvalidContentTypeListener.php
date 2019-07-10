@@ -45,7 +45,7 @@ final class InvalidContentTypeListener
 
         return new TranslationRequest(
             'libero.jats_content_workflow.content_type.invalid.details',
-            ['content-type' => $exception->getContentType(), 'uri' => $exception->getUri()]
+            ['%content-type%' => $exception->getContentType(), '%uri%' => $exception->getUri()]
         );
     }
 

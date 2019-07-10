@@ -45,7 +45,7 @@ final class AssetLoadFailedListener
 
         return new TranslationRequest(
             'libero.jats_content_workflow.asset.load_failed.details',
-            ['asset' => $exception->getAsset(), 'reason' => $exception->getReason()]
+            ['%asset%' => $exception->getAsset(), '%reason%' => $exception->getReason()]
         );
     }
 

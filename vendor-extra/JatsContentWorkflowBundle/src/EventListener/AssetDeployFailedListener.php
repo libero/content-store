@@ -45,7 +45,7 @@ final class AssetDeployFailedListener
 
         return new TranslationRequest(
             'libero.jats_content_workflow.asset.deploy_failed.details',
-            ['asset' => $exception->getFrom(), 'target' => $exception->getTo()]
+            ['%asset%' => $exception->getFrom(), '%target%' => $exception->getTo()]
         );
     }
 

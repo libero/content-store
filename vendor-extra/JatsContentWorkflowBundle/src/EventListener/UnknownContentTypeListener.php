@@ -45,7 +45,7 @@ final class UnknownContentTypeListener
 
         return new TranslationRequest(
             'libero.jats_content_workflow.content_type.unknown.details',
-            ['uri' => $exception->getUri()]
+            ['%uri%' => $exception->getUri()]
         );
     }
 
