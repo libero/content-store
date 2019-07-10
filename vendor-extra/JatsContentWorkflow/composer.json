@@ -1,14 +1,14 @@
 {
-    "name": "libero/jats-content-workflow-bundle",
+    "name": "libero/jats-content-workflow",
     "description": "JATS content workflow",
-    "type": "symfony-bundle",
+    "type": "library",
     "license": "MIT",
     "autoload": {
         "files": [
             "src/functions.php"
         ],
         "psr-4": {
-            "Libero\\JatsContentWorkflowBundle\\": "src/"
+            "Libero\\JatsContentWorkflow\\": "src/"
         }
     },
     "require": {
@@ -21,7 +21,6 @@
         "libero/content-api-bundle": "^0.1",
         "psr/http-message": "^1.0",
         "symfony/http-foundation": "^4.2",
-        "symfony/http-kernel": "^4.2",
         "symfony/workflow": "^4.2"
     },
     "config": {

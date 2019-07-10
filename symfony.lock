@@ -131,7 +131,7 @@
     "libero/content-api-bundle": {
         "version": "v0.1.1"
     },
-    "libero/jats-content-workflow-bundle": {
+    "libero/jats-content-workflow": {
         "version": "1.0.x-dev"
     },
     "libero/ping-controller": {

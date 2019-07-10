@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Libero\JatsContentWorkflowBundle;
+namespace Libero\JatsContentWorkflow;
 
 use FluentDOM\DOM\Element;
 use GuzzleHttp\Psr7\UriNormalizer;

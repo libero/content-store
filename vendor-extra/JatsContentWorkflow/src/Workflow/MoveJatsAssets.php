@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Libero\JatsContentWorkflowBundle\Workflow;
+namespace Libero\JatsContentWorkflow\Workflow;
 
 use FluentDOM\DOM\Document;
 use FluentDOM\DOM\Element;
@@ -23,9 +23,9 @@ use function GuzzleHttp\Psr7\mimetype_from_filename;
 use function implode;
 use function in_array;
 use function Libero\ContentApiBundle\stream_hash;
-use function Libero\JatsContentWorkflowBundle\delimit_regex;
-use function Libero\JatsContentWorkflowBundle\element_uri;
-use function Libero\JatsContentWorkflowBundle\parse_media_type;
+use function Libero\JatsContentWorkflow\delimit_regex;
+use function Libero\JatsContentWorkflow\element_uri;
+use function Libero\JatsContentWorkflow\parse_media_type;
 use function preg_match;
 use function sprintf;
 
