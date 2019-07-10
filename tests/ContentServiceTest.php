@@ -175,7 +175,7 @@ XML
             $flysystem->getVisibility('new-article/v1/879f77a11b0649cb8af511fa5d6e4a7e.jpeg')
         );
         $this->assertSame(
-            'image/jpeg',
+            'image/jpeg;foo=bar',
             $flysystem->getMimetype('new-article/v1/879f77a11b0649cb8af511fa5d6e4a7e.jpeg')
         );
     }

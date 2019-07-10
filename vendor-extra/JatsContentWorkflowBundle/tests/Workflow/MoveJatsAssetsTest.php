@@ -271,7 +271,7 @@ XML
 
         $this->assertSame('figure1', $this->filesystem->read($path));
         $this->assertSame(AdapterInterface::VISIBILITY_PUBLIC, $this->filesystem->getVisibility($path));
-        $this->assertSame('image/jpeg', $this->filesystem->getMimetype($path));
+        $this->assertSame('image/jpeg;foo=bar', $this->filesystem->getMimetype($path));
     }
 
     /**
