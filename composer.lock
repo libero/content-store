@@ -1867,7 +1867,7 @@
             "dist": {
                 "type": "path",
                 "url": "./vendor-extra/JatsContentWorkflow",
-                "reference": "9fba8f2d5daa71a0eb931e7b7c2a1384571f3f39"
+                "reference": "d4aeba6abca38367dc43128493815a89a1333ee8"
             },
             "require": {
                 "fluentdom/fluentdom": "^7.0",
@@ -1876,6 +1876,7 @@
                 "guzzlehttp/psr7": "^1.5",
                 "league/flysystem": "^1.0",
                 "libero/content-api-bundle": "^0.1",
+                "libero/media-type": "^0.1",
                 "php": "^7.2",
                 "psr/http-message": "^1.0",
                 "symfony/http-foundation": "^4.2",
@@ -1899,6 +1900,54 @@
                 "MIT"
             ],
             "description": "JATS content workflow"
+        },
+        {
+            "name": "libero/media-type",
+            "version": "v0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/libero/media-type.git",
+                "reference": "79f1f5081f1ea7e31a4f962a09109b6fc7b9420c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/libero/media-type/zipball/79f1f5081f1ea7e31a4f962a09109b6fc7b9420c",
+                "reference": "79f1f5081f1ea7e31a4f962a09109b6fc7b9420c",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2",
+                "symfony/polyfill-mbstring": "^1.0"
+            },
+            "require-dev": {
+                "daverandom/exceptional-json": "^1.0",
+                "libero/coding-standard": "^0.5",
+                "phpstan/phpstan": "^0.11",
+                "phpstan/phpstan-phpunit": "^0.11",
+                "phpunit/phpunit": "^8.1",
+                "symfony/filesystem": "^4.3",
+                "symfony/finder": "^4.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Libero\\MediaType\\": "src/"
+                },
+                "files": [
+                    "src/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Media Type",
+            "time": "2019-06-24T10:44:14+00:00"
         },
         {
             "name": "libero/ping-controller",
@@ -4577,23 +4626,23 @@
         },
         {
             "name": "league/flysystem-memory",
-            "version": "1.0.1",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem-memory.git",
-                "reference": "1cabecd08a8caec92a96a953c0d93b5ce83b07a2"
+                "reference": "d0e87477c32e29f999b4de05e64c1adcddb51757"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem-memory/zipball/1cabecd08a8caec92a96a953c0d93b5ce83b07a2",
-                "reference": "1cabecd08a8caec92a96a953c0d93b5ce83b07a2",
+                "url": "https://api.github.com/repos/thephpleague/flysystem-memory/zipball/d0e87477c32e29f999b4de05e64c1adcddb51757",
+                "reference": "d0e87477c32e29f999b4de05e64c1adcddb51757",
                 "shasum": ""
             },
             "require": {
                 "league/flysystem": "~1.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "~4.1"
+                "phpunit/phpunit": "^5.7.10"
             },
             "type": "library",
             "extra": {
@@ -4624,7 +4673,7 @@
                 "adapter",
                 "memory"
             ],
-            "time": "2016-06-04T03:57:11+00:00"
+            "time": "2019-05-30T21:34:13+00:00"
         },
         {
             "name": "libero/coding-standard",

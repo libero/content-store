@@ -7,13 +7,13 @@ namespace Libero\JatsContentWorkflow;
 use FluentDOM\DOM\Element;
 use GuzzleHttp\Psr7\UriNormalizer;
 use GuzzleHttp\Psr7\UriResolver;
+use Libero\MediaType\Exception\InvalidMediaType;
+use Libero\MediaType\MediaType;
 use Psr\Http\Message\UriInterface;
-use UnexpectedValueException;
 use function addcslashes;
-use function array_shift;
-use function count;
+use function GuzzleHttp\Psr7\mimetype_from_filename;
 use function GuzzleHttp\Psr7\uri_for;
-use function preg_match;
+use function is_string;
 
 /**
  * @internal
@@ -32,16 +32,15 @@ function element_uri(Element $element) : UriInterface
 /**
  * @internal
  */
-function parse_media_type(string $mediaType) : array
+function guess_media_type(UriInterface $uri) : MediaType
 {
-    preg_match('~^(.+?)/(.+?)(?:$|;)~', $mediaType, $contentType);
-    array_shift($contentType);
+    $guessed = mimetype_from_filename((string) $uri);
 
-    if (2 !== count($contentType)) {
-        throw new UnexpectedValueException('Invalid content-type provided');
+    if (!is_string($guessed)) {
+        throw new InvalidMediaType('Unable to guess a type');
     }
 
-    return $contentType;
+    return MediaType::fromString($guessed);
 }
 
 /**

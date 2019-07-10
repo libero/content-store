@@ -13,19 +13,18 @@ use GuzzleHttp\Psr7\Uri;
 use League\Flysystem\AdapterInterface;
 use League\Flysystem\FilesystemInterface;
 use Libero\ContentApiBundle\Model\PutTask;
+use Libero\MediaType\Exception\InvalidMediaType;
+use Libero\MediaType\MediaType;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
 use Symfony\Component\HttpFoundation\File\MimeType\ExtensionGuesser;
 use Symfony\Component\Workflow\Event\Event;
-use UnexpectedValueException;
 use function GuzzleHttp\Promise\each_limit_all;
-use function GuzzleHttp\Psr7\mimetype_from_filename;
-use function implode;
 use function in_array;
 use function Libero\ContentApiBundle\stream_hash;
 use function Libero\JatsContentWorkflow\delimit_regex;
 use function Libero\JatsContentWorkflow\element_uri;
-use function Libero\JatsContentWorkflow\parse_media_type;
+use function Libero\JatsContentWorkflow\guess_media_type;
 use function preg_match;
 use function sprintf;
 
@@ -116,25 +115,25 @@ final class MoveJatsAssets
     /**
      * @param resource $stream
      */
-    private function deployAsset(array $contentType, $stream, string $path) : void
+    private function deployAsset(MediaType $contentType, $stream, string $path) : void
     {
         $this->filesystem->putStream(
             $path,
             $stream,
             [
-                'mimetype' => implode('/', $contentType),
+                'mimetype' => (string) $contentType,
                 'visibility' => AdapterInterface::VISIBILITY_PUBLIC,
             ]
         );
     }
 
-    private function updateElement(Element $element, array $contentType, string $path) : void
+    private function updateElement(Element $element, MediaType $contentType, string $path) : void
     {
         $element->setAttribute('xlink:href', sprintf('%s/%s', $this->publicUri, $path));
 
         if (in_array($element->localName, self::HAS_MIMETYPE_ATTRIBUTE, true)) {
-            $element->setAttribute('mimetype', $contentType[0]);
-            $element->setAttribute('mime-subtype', $contentType[1]);
+            $element->setAttribute('mimetype', $contentType->getType());
+            $element->setAttribute('mime-subtype', $contentType->getSubType());
         }
     }
 
@@ -148,13 +147,13 @@ final class MoveJatsAssets
     /**
      * @param resource $stream
      */
-    private function pathFor(PutTask $task, array $contentType, $stream) : string
+    private function pathFor(PutTask $task, MediaType $contentType, $stream) : string
     {
         $hash = stream_hash($stream);
 
         $path = sprintf('%s/v%s/%s', $task->getItemId(), $task->getItemVersion(), $hash);
 
-        $extension = ExtensionGuesser::getInstance()->guess(implode('/', $contentType));
+        $extension = ExtensionGuesser::getInstance()->guess($contentType->getEssence());
         if ($extension) {
             $path .= ".{$extension}";
         }
@@ -162,18 +161,16 @@ final class MoveJatsAssets
         return $path;
     }
 
-    private function contentTypeFor(UriInterface $uri, ResponseInterface $response) : array
+    private function contentTypeFor(UriInterface $uri, ResponseInterface $response) : MediaType
     {
         try {
-            $contentType = parse_media_type($response->getHeaderLine('Content-Type'));
+            $contentType = MediaType::fromString($response->getHeaderLine('Content-Type'));
+        } catch (InvalidMediaType $e) {
+            return guess_media_type($uri);
+        }
 
-            if (in_array(implode('/', $contentType), self::IGNORE_CONTENT_TYPES, true)) {
-                throw new UnexpectedValueException('Ignored type');
-            }
-        } catch (UnexpectedValueException $e) {
-            $contentType = parse_media_type(
-                mimetype_from_filename((string) $uri) ?? $response->getHeaderLine('Content-Type')
-            );
+        if (in_array($contentType->getEssence(), self::IGNORE_CONTENT_TYPES, true)) {
+            return $this->contentTypeFor($uri, $response->withoutHeader('Content-Type'));
         }
 
         return $contentType;
