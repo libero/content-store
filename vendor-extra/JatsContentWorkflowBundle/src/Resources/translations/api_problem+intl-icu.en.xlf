@@ -29,7 +29,7 @@
             </trans-unit>
 
             <trans-unit id="6" resname="libero.jats_content_workflow.content_type.invalid.details">
-                <source>"{content-type}" from {uri} is an invalid Content-Type.</source>
+                <source>"{content_type}" from {uri} is an invalid Content-Type.</source>
             </trans-unit>
 
             <trans-unit id="7" resname="libero.jats_content_workflow.content_type.unknown.title">

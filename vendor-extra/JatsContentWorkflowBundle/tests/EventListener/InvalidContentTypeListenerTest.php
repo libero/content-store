@@ -28,7 +28,7 @@ final class InvalidContentTypeListenerTest extends TestCase
             'array',
             [
                 'libero.jats_content_workflow.content_type.invalid.title' => 'es title',
-                'libero.jats_content_workflow.content_type.invalid.details' => 'es details: %uri% %content-type%',
+                'libero.jats_content_workflow.content_type.invalid.details' => 'es details: %uri% %content_type%',
             ],
             'es',
             'api_problem'
