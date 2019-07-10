@@ -43,6 +43,8 @@
     },
     "require-dev": {
         "csa/guzzle-cache-middleware": "^1.0",
+        "guzzlehttp/psr7": "^1.5",
+        "league/flysystem": "^1.0",
         "league/flysystem-memory": "^1.0",
         "libero/coding-standard": "^0.5",
         "phpstan/phpstan": "^0.11",
