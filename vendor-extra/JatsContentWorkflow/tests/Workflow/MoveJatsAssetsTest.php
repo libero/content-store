@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace tests\Libero\ContentStore\Workflow;
+namespace tests\Libero\JatsContentWorkflow\Workflow;
 
 use Csa\GuzzleHttp\Middleware\Cache\Adapter\MockStorageAdapter;
 use Csa\GuzzleHttp\Middleware\Cache\MockMiddleware;
@@ -20,7 +20,7 @@ use League\Flysystem\Memory\MemoryAdapter;
 use Libero\ContentApiBundle\Model\ItemId;
 use Libero\ContentApiBundle\Model\ItemVersionNumber;
 use Libero\ContentApiBundle\Model\PutTask;
-use Libero\ContentStore\Workflow\MoveJatsAssets;
+use Libero\JatsContentWorkflow\Workflow\MoveJatsAssets;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Workflow\Event\Event;
 use Symfony\Component\Workflow\Marking;
