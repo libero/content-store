@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Libero\ContentStore\EventListener;
+namespace Libero\JatsContentWorkflowBundle\EventListener;
 
 use Libero\ApiProblemBundle\Event\CreateApiProblem;
 use Libero\ContentApiBundle\EventListener\TranslatingApiProblemListener;
 use Libero\ContentApiBundle\EventListener\TranslationRequest;
-use Libero\ContentStore\Exception\AssetLoadFailed;
+use Libero\JatsContentWorkflowBundle\Exception\InvalidContentType;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
-final class AssetLoadFailedListener
+final class InvalidContentTypeListener
 {
     use TranslatingApiProblemListener;
 
@@ -25,7 +25,7 @@ final class AssetLoadFailedListener
 
     protected function supports(Throwable $exception) : bool
     {
-        return $exception instanceof AssetLoadFailed;
+        return $exception instanceof InvalidContentType;
     }
 
     protected function status(CreateApiProblem $event) : int
@@ -35,17 +35,17 @@ final class AssetLoadFailedListener
 
     protected function titleTranslation(CreateApiProblem $event) : TranslationRequest
     {
-        return new TranslationRequest('libero.content_store.asset.load_failed.title');
+        return new TranslationRequest('libero.jats_content_workflow.content_type.invalid.title');
     }
 
     protected function detailsTranslation(CreateApiProblem $event) : ?TranslationRequest
     {
-        /** @var AssetLoadFailed $exception */
+        /** @var InvalidContentType $exception */
         $exception = $event->getException();
 
         return new TranslationRequest(
-            'libero.content_store.asset.load_failed.details',
-            ['asset' => $exception->getAsset(), 'reason' => $exception->getReason()]
+            'libero.jats_content_workflow.content_type.invalid.details',
+            ['content-type' => $exception->getContentType(), 'uri' => $exception->getUri()]
         );
     }
 

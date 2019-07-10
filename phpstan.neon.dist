@@ -9,6 +9,7 @@ parameters:
         - public/index.php
         - src
         - tests
+        - vendor-extra
     symfony:
         container_xml_path: %currentWorkingDirectory%/var/cache/dev/srcLibero_ContentStore_KernelDevDebugContainer.xml
 

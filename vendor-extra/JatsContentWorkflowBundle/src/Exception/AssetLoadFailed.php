@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Libero\ContentStore\Exception;
+namespace Libero\JatsContentWorkflowBundle\Exception;
 
 use GuzzleHttp\Exception\RequestException;
 use Psr\Http\Message\UriInterface;

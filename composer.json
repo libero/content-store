@@ -4,33 +4,30 @@
     "type": "project",
     "license": "MIT",
     "autoload": {
-        "files": [
-            "src/functions.php"
-        ],
         "psr-4": {
             "Libero\\ContentStore\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "tests\\Libero\\ContentStore\\": "tests/"
+            "tests\\Libero\\ContentStore\\": "tests/",
+            "tests\\Libero\\JatsContentWorkflowBundle\\": "vendor-extra/JatsContentWorkflowBundle/tests/"
         }
     },
     "require": {
         "php": "^7.3",
         "ext-ctype": "*",
+        "ext-intl": "*",
         "ext-mbstring": "*",
         "ext-pdo_pgsql": "*",
         "aws/aws-sdk-php-symfony": "^2.0",
         "csa/guzzle-bundle": "^3.1",
         "doctrine/doctrine-bundle": "^1.10",
         "doctrine/doctrine-migrations-bundle": "^2.0",
-        "guzzlehttp/guzzle": "^6.3",
-        "guzzlehttp/psr7": "^1.5",
-        "league/flysystem": "^1.0",
         "league/flysystem-aws-s3-v3": "^1.0",
         "libero/api-problem-bundle": "^0.2",
         "libero/content-api-bundle": "^0.1",
+        "libero/jats-content-workflow-bundle": "^1.0@dev",
         "oneup/flysystem-bundle": "^3.1",
         "symfony/config": "^4.2",
         "symfony/console": "^4.2",
@@ -47,6 +44,8 @@
     },
     "require-dev": {
         "csa/guzzle-cache-middleware": "^1.0",
+        "guzzlehttp/psr7": "^1.5",
+        "league/flysystem": "^1.0",
         "league/flysystem-memory": "^1.0",
         "libero/coding-standard": "^0.5",
         "phpstan/phpstan": "^0.11",
@@ -63,9 +62,16 @@
     },
     "replace": {
         "symfony/polyfill-ctype": "*",
+        "symfony/polyfill-intl-messageformatter": "*",
         "symfony/polyfill-mbstring": "*",
         "symfony/polyfill-php72": "*"
     },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "./vendor-extra/*"
+        }
+    ],
     "config": {
         "sort-packages": true
     },

@@ -10,21 +10,18 @@ services:
 
     Libero\ContentStore\:
         resource: '../src/*'
-        exclude: '../src/{functions.php,Kernel.php}'
+        exclude: '../src/{Kernel.php}'
 
-    Libero\ContentStore\EventListener\:
-        resource: '../src/EventListener/*'
-        tags:
-            - name: kernel.event_listener
-              event: libero.api_problem.create
-              method: onCreateApiProblem
-
-    Libero\ContentStore\Workflow\MoveJatsAssets:
+    Libero\JatsContentWorkflowBundle\Workflow\MoveJatsAssets:
         arguments:
             - '%env(ASSETS_ORIGIN_WHITELIST)%'
             - '%env(ASSETS_PUBLIC_URI)%'
             - '@oneup_flysystem.assets_filesystem'
             - '@csa_guzzle.client.asset_download'
+        tags:
+            - name: 'kernel.event_listener'
+              event: 'workflow.libero.content_store.put.transition.manipulate'
+              method: 'onManipulate'
 
     libero.content_store.s3_handler:
         class: Aws\Handler\GuzzleV6\GuzzleHandler

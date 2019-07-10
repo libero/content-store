@@ -6,6 +6,7 @@ env:
     global:
         - APP_SECRET=secret
         - COMPOSE_PROJECT_NAME=contentstore
+        - IMAGE_REVISION=$TRAVIS_COMMIT
         - IMAGE_TAG=$TRAVIS_COMMIT
 
 install:
@@ -19,6 +20,7 @@ script:
     - docker-compose --file docker-compose.yaml --file docker-compose.test.yaml run app vendor/bin/phpunit
     - docker-compose --file docker-compose.yaml --file docker-compose.test.yaml run app vendor/bin/phpcs -p
     - docker-compose --file docker-compose.yaml --file docker-compose.test.yaml run -e APP_ENV=dev app sh -c "bin/console cache:warmup --no-optional-warmers && vendor/bin/phpstan analyse"
+    - .travis/check-vendor-extra-updated.sh
 
 after_success:
     - .scripts/travis/push-image.sh content-store

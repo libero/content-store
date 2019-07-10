@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Libero\ContentStore\EventListener;
+namespace Libero\JatsContentWorkflowBundle\EventListener;
 
 use Libero\ApiProblemBundle\Event\CreateApiProblem;
 use Libero\ContentApiBundle\EventListener\TranslatingApiProblemListener;
 use Libero\ContentApiBundle\EventListener\TranslationRequest;
-use Libero\ContentStore\Exception\AssetDeployFailed;
+use Libero\JatsContentWorkflowBundle\Exception\UnknownContentType;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
-final class AssetDeployFailedListener
+final class UnknownContentTypeListener
 {
     use TranslatingApiProblemListener;
 
@@ -25,7 +25,7 @@ final class AssetDeployFailedListener
 
     protected function supports(Throwable $exception) : bool
     {
-        return $exception instanceof AssetDeployFailed;
+        return $exception instanceof UnknownContentType;
     }
 
     protected function status(CreateApiProblem $event) : int
@@ -35,17 +35,17 @@ final class AssetDeployFailedListener
 
     protected function titleTranslation(CreateApiProblem $event) : TranslationRequest
     {
-        return new TranslationRequest('libero.content_store.asset.deploy_failed.title');
+        return new TranslationRequest('libero.jats_content_workflow.content_type.unknown.title');
     }
 
     protected function detailsTranslation(CreateApiProblem $event) : ?TranslationRequest
     {
-        /** @var AssetDeployFailed $exception */
+        /** @var UnknownContentType $exception */
         $exception = $event->getException();
 
         return new TranslationRequest(
-            'libero.content_store.asset.deploy_failed.details',
-            ['asset' => $exception->getFrom(), 'target' => $exception->getTo()]
+            'libero.jats_content_workflow.content_type.unknown.details',
+            ['uri' => $exception->getUri()]
         );
     }
 

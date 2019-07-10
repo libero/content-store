@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Libero\ContentStore\Exception;
+namespace Libero\JatsContentWorkflowBundle\Exception;
 
 use Psr\Http\Message\UriInterface;
 use Throwable;

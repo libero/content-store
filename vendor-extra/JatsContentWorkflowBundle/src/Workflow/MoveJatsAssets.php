@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Libero\ContentStore\Workflow;
+namespace Libero\JatsContentWorkflowBundle\Workflow;
 
 use FluentDOM\DOM\Document;
 use FluentDOM\DOM\Element;
@@ -14,13 +14,12 @@ use GuzzleHttp\Psr7\Uri;
 use League\Flysystem\AdapterInterface;
 use League\Flysystem\FilesystemInterface;
 use Libero\ContentApiBundle\Model\PutTask;
-use Libero\ContentStore\Exception\AssetDeployFailed;
-use Libero\ContentStore\Exception\AssetLoadFailed;
-use Libero\ContentStore\Exception\InvalidContentType;
-use Libero\ContentStore\Exception\UnknownContentType;
+use Libero\JatsContentWorkflowBundle\Exception\AssetDeployFailed;
+use Libero\JatsContentWorkflowBundle\Exception\AssetLoadFailed;
+use Libero\JatsContentWorkflowBundle\Exception\InvalidContentType;
+use Libero\JatsContentWorkflowBundle\Exception\UnknownContentType;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\File\MimeType\ExtensionGuesser;
 use Symfony\Component\Workflow\Event\Event;
 use UnexpectedValueException;
@@ -30,13 +29,13 @@ use function GuzzleHttp\Psr7\uri_for;
 use function implode;
 use function in_array;
 use function Libero\ContentApiBundle\stream_hash;
-use function Libero\ContentStore\delimit_regex;
-use function Libero\ContentStore\element_uri;
-use function Libero\ContentStore\parse_media_type;
+use function Libero\JatsContentWorkflowBundle\delimit_regex;
+use function Libero\JatsContentWorkflowBundle\element_uri;
+use function Libero\JatsContentWorkflowBundle\parse_media_type;
 use function preg_match;
 use function sprintf;
 
-final class MoveJatsAssets implements EventSubscriberInterface
+final class MoveJatsAssets
 {
     private const IGNORE_CONTENT_TYPES = [
         'application/octet-stream',
@@ -69,13 +68,6 @@ final class MoveJatsAssets implements EventSubscriberInterface
         $this->filesystem = $filesystem;
         $this->client = $client;
         $this->concurrency = $concurrency;
-    }
-
-    public static function getSubscribedEvents() : array
-    {
-        return [
-            'workflow.libero.content_store.put.transition.manipulate' => 'onManipulate',
-        ];
     }
 
     public function onManipulate(Event $event) : void

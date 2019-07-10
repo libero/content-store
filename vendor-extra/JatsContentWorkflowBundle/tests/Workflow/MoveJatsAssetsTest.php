@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace tests\Libero\ContentStore\Workflow;
+namespace tests\Libero\JatsContentWorkflowBundle\Workflow;
 
 use Csa\GuzzleHttp\Middleware\Cache\Adapter\MockStorageAdapter;
 use Csa\GuzzleHttp\Middleware\Cache\MockMiddleware;
@@ -21,11 +21,11 @@ use League\Flysystem\Memory\MemoryAdapter;
 use Libero\ContentApiBundle\Model\ItemId;
 use Libero\ContentApiBundle\Model\ItemVersionNumber;
 use Libero\ContentApiBundle\Model\PutTask;
-use Libero\ContentStore\Exception\AssetDeployFailed;
-use Libero\ContentStore\Exception\AssetLoadFailed;
-use Libero\ContentStore\Exception\InvalidContentType;
-use Libero\ContentStore\Exception\UnknownContentType;
-use Libero\ContentStore\Workflow\MoveJatsAssets;
+use Libero\JatsContentWorkflowBundle\Exception\AssetDeployFailed;
+use Libero\JatsContentWorkflowBundle\Exception\AssetLoadFailed;
+use Libero\JatsContentWorkflowBundle\Exception\InvalidContentType;
+use Libero\JatsContentWorkflowBundle\Exception\UnknownContentType;
+use Libero\JatsContentWorkflowBundle\Workflow\MoveJatsAssets;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Workflow\Event\Event;
 use Symfony\Component\Workflow\Marking;
