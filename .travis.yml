@@ -6,6 +6,7 @@ env:
     global:
         - APP_SECRET=secret
         - COMPOSE_PROJECT_NAME=contentstore
+        - IMAGE_REVISION=$TRAVIS_COMMIT
         - IMAGE_TAG=$TRAVIS_COMMIT
 
 install:
