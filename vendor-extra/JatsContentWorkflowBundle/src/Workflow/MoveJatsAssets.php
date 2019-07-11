@@ -2,17 +2,22 @@
 
 declare(strict_types=1);
 
-namespace Libero\JatsContentWorkflow\Workflow;
+namespace Libero\JatsContentWorkflowBundle\Workflow;
 
 use FluentDOM\DOM\Document;
 use FluentDOM\DOM\Element;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Promise\Coroutine;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Uri;
 use League\Flysystem\AdapterInterface;
 use League\Flysystem\FilesystemInterface;
 use Libero\ContentApiBundle\Model\PutTask;
+use Libero\JatsContentWorkflowBundle\Exception\AssetDeployFailed;
+use Libero\JatsContentWorkflowBundle\Exception\AssetLoadFailed;
+use Libero\JatsContentWorkflowBundle\Exception\InvalidContentType;
+use Libero\JatsContentWorkflowBundle\Exception\UnknownContentType;
 use Libero\MediaType\Exception\InvalidMediaType;
 use Libero\MediaType\MediaType;
 use Psr\Http\Message\ResponseInterface;
@@ -20,11 +25,12 @@ use Psr\Http\Message\UriInterface;
 use Symfony\Component\HttpFoundation\File\MimeType\ExtensionGuesser;
 use Symfony\Component\Workflow\Event\Event;
 use function GuzzleHttp\Promise\each_limit_all;
+use function GuzzleHttp\Psr7\mimetype_from_filename;
+use function GuzzleHttp\Psr7\uri_for;
 use function in_array;
 use function Libero\ContentApiBundle\stream_hash;
-use function Libero\JatsContentWorkflow\delimit_regex;
-use function Libero\JatsContentWorkflow\element_uri;
-use function Libero\JatsContentWorkflow\guess_media_type;
+use function Libero\JatsContentWorkflowBundle\delimit_regex;
+use function Libero\JatsContentWorkflowBundle\element_uri;
 use function preg_match;
 use function sprintf;
 
@@ -98,8 +104,14 @@ final class MoveJatsAssets
     {
         return new Coroutine(
             function () use ($asset, $task) : iterable {
-                /** @var ResponseInterface $response */
-                $response = yield $this->client->requestAsync('GET', $uri = element_uri($asset));
+                $uri = element_uri($asset);
+
+                try {
+                    /** @var ResponseInterface $response */
+                    $response = yield $this->client->requestAsync('GET', $uri);
+                } catch (GuzzleException $e) {
+                    throw AssetLoadFailed::fromException($uri, $e);
+                }
 
                 $contentType = $this->contentTypeFor($uri, $response);
                 /** @var resource $stream */
@@ -107,7 +119,7 @@ final class MoveJatsAssets
                 $path = $this->pathFor($task, $contentType, $stream);
 
                 $this->updateElement($asset, $contentType, $path);
-                $this->deployAsset($contentType, $stream, $path);
+                $this->deployAsset($contentType, $stream, $path, $uri);
             }
         );
     }
@@ -115,9 +127,9 @@ final class MoveJatsAssets
     /**
      * @param resource $stream
      */
-    private function deployAsset(MediaType $contentType, $stream, string $path) : void
+    private function deployAsset(MediaType $contentType, $stream, UriInterface $path, UriInterface $origin) : void
     {
-        $this->filesystem->putStream(
+        $result = $this->filesystem->putStream(
             $path,
             $stream,
             [
@@ -125,9 +137,15 @@ final class MoveJatsAssets
                 'visibility' => AdapterInterface::VISIBILITY_PUBLIC,
             ]
         );
+
+        if (true === $result) {
+            return;
+        }
+
+        throw new AssetDeployFailed($origin, $path);
     }
 
-    private function updateElement(Element $element, MediaType $contentType, string $path) : void
+    private function updateElement(Element $element, MediaType $contentType, UriInterface $path) : void
     {
         $element->setAttribute('xlink:href', sprintf('%s/%s', $this->publicUri, $path));
 
@@ -147,7 +165,7 @@ final class MoveJatsAssets
     /**
      * @param resource $stream
      */
-    private function pathFor(PutTask $task, MediaType $contentType, $stream) : string
+    private function pathFor(PutTask $task, MediaType $contentType, $stream) : UriInterface
     {
         $hash = stream_hash($stream);
 
@@ -158,19 +176,26 @@ final class MoveJatsAssets
             $path .= ".{$extension}";
         }
 
-        return $path;
+        return uri_for($path);
     }
 
     private function contentTypeFor(UriInterface $uri, ResponseInterface $response) : MediaType
     {
+        $rawType = $response->getHeaderLine('Content-Type');
+
         try {
             $contentType = MediaType::fromString($response->getHeaderLine('Content-Type'));
-        } catch (InvalidMediaType $e) {
-            return guess_media_type($uri);
-        }
 
-        if (in_array($contentType->getEssence(), self::IGNORE_CONTENT_TYPES, true)) {
-            return $this->contentTypeFor($uri, $response->withoutHeader('Content-Type'));
+            if (in_array($contentType->getEssence(), self::IGNORE_CONTENT_TYPES, true)) {
+                throw new InvalidMediaType('Ignored type');
+            }
+        } catch (InvalidMediaType $e) {
+            try {
+                $rawType = mimetype_from_filename((string) $uri) ?? $response->getHeaderLine('Content-Type');
+                $contentType = MediaType::fromString($rawType);
+            } catch (InvalidMediaType $e) {
+                throw $rawType ? new InvalidContentType($rawType, $uri, $e) : new UnknownContentType($uri, $e);
+            }
         }
 
         return $contentType;

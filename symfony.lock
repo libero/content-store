@@ -131,7 +131,7 @@
     "libero/content-api-bundle": {
         "version": "v0.1.1"
     },
-    "libero/jats-content-workflow": {
+    "libero/jats-content-workflow-bundle": {
         "version": "1.0.x-dev"
     },
     "libero/media-type": {

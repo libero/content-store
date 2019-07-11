@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace tests\Libero\JatsContentWorkflow\Workflow;
+namespace tests\Libero\JatsContentWorkflowBundle\Workflow;
 
 use Csa\GuzzleHttp\Middleware\Cache\Adapter\MockStorageAdapter;
 use Csa\GuzzleHttp\Middleware\Cache\MockMiddleware;
@@ -16,12 +16,16 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use League\Flysystem\AdapterInterface;
 use League\Flysystem\Filesystem;
+use League\Flysystem\FilesystemInterface;
 use League\Flysystem\Memory\MemoryAdapter;
 use Libero\ContentApiBundle\Model\ItemId;
 use Libero\ContentApiBundle\Model\ItemVersionNumber;
 use Libero\ContentApiBundle\Model\PutTask;
-use Libero\JatsContentWorkflow\Workflow\MoveJatsAssets;
-use Libero\MediaType\Exception\InvalidMediaType;
+use Libero\JatsContentWorkflowBundle\Exception\AssetDeployFailed;
+use Libero\JatsContentWorkflowBundle\Exception\AssetLoadFailed;
+use Libero\JatsContentWorkflowBundle\Exception\InvalidContentType;
+use Libero\JatsContentWorkflowBundle\Exception\UnknownContentType;
+use Libero\JatsContentWorkflowBundle\Workflow\MoveJatsAssets;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Workflow\Event\Event;
 use Symfony\Component\Workflow\Marking;
@@ -337,6 +341,84 @@ XML
     /**
      * @test
      */
+    public function it_fails_if_the_asset_can_not_be_loaded() : void
+    {
+        $mover = new MoveJatsAssets('.+', 'http://public-assets/path', $this->filesystem, $this->client);
+
+        $document = FluentDOM::load(
+            <<<XML
+<item xmlns="http://libero.pub">
+    <article xmlns="http://jats.nlm.nih.gov" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <body>
+            <graphic xlink:href="http://origin-assets/assets/figure"/>
+        </body>
+    </article>
+</item>
+XML
+        );
+
+        $marking = new Marking();
+        $task = new PutTask('service', ItemId::fromString('id'), ItemVersionNumber::fromInt(1), $document);
+        $transition = new Transition('transition', 'place1', 'place2');
+
+        $event = new Event($task, $marking, $transition);
+
+        $this->mock->save(
+            new Request('GET', 'http://origin-assets/assets/figure'),
+            new Response(404)
+        );
+
+        $this->expectException(AssetLoadFailed::class);
+        $this->expectExceptionMessage('Failed to load http://origin-assets/assets/figure due to "404 Not Found"');
+
+        $mover->onManipulate($event);
+    }
+
+    /**
+     * @test
+     */
+    public function it_fails_if_the_asset_can_not_be_deployed() : void
+    {
+        $filesystem = $this->createMock(FilesystemInterface::class);
+        $filesystem->method('putStream')->willReturn(false);
+
+        $mover = new MoveJatsAssets('.+', 'http://public-assets/path', $filesystem, $this->client);
+
+        $document = FluentDOM::load(
+            <<<XML
+<item xmlns="http://libero.pub" xml:base="http://origin-assets/">
+    <article xmlns="http://jats.nlm.nih.gov" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <body>
+            <graphic xlink:href="assets/figure1.jpg"/>
+        </body>
+    </article>
+</item>
+XML
+        );
+
+        $marking = new Marking();
+        $task = new PutTask('service', ItemId::fromString('id'), ItemVersionNumber::fromInt(1), $document);
+        $transition = new Transition('transition', 'place1', 'place2');
+
+        $event = new Event($task, $marking, $transition);
+
+        $this->mock->save(
+            new Request('GET', 'http://origin-assets/assets/figure1.jpg'),
+            new Response(200, ['Content-Type' => 'image/jpeg;foo=bar'], 'figure1')
+        );
+
+        $this->expectException(AssetDeployFailed::class);
+        $this->expectExceptionMessage(
+            'Failed to move asset from http://origin-assets/assets/figure1.jpg to '.
+            'id/v1/879f77a11b0649cb8af511fa5d6e4a7e.jpeg'
+        );
+
+        $mover->onManipulate($event);
+    }
+
+    /**
+     * @test
+     */
     public function it_fails_if_an_invalid_content_type_is_returned() : void
     {
         $mover = new MoveJatsAssets('.+', 'http://public-assets/path', $this->filesystem, $this->client);
@@ -364,7 +446,8 @@ XML
             new Response(200, ['Content-Type' => 'foo'], 'figure')
         );
 
-        $this->expectException(InvalidMediaType::class);
+        $this->expectException(InvalidContentType::class);
+        $this->expectExceptionMessage('"foo" is an invalid Content-Type');
 
         $mover->onManipulate($event);
     }
@@ -559,5 +642,41 @@ XML
         );
 
         $this->assertXmlStringEqualsXmlString($expected, $task->getDocument());
+    }
+
+    /**
+     * @test
+     */
+    public function it_fails_if_the_content_type_is_unknown() : void
+    {
+        $mover = new MoveJatsAssets('.+', 'http://public-assets/path', $this->filesystem, $this->client);
+
+        $document = FluentDOM::load(
+            <<<XML
+<item xmlns="http://libero.pub">
+    <article xmlns="http://jats.nlm.nih.gov" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <body>
+            <graphic xlink:href="http://origin-assets/assets/figure.foo"/>
+        </body>
+    </article>
+</item>
+XML
+        );
+
+        $marking = new Marking();
+        $task = new PutTask('service', ItemId::fromString('id'), ItemVersionNumber::fromInt(1), $document);
+        $transition = new Transition('transition', 'place1', 'place2');
+
+        $event = new Event($task, $marking, $transition);
+
+        $this->mock->save(
+            new Request('GET', 'http://origin-assets/assets/figure.foo'),
+            new Response(200, [], 'figure')
+        );
+
+        $this->expectException(UnknownContentType::class);
+        $this->expectExceptionMessage('Unknown Content-Type');
+
+        $mover->onManipulate($event);
     }
 }

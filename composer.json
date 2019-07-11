@@ -11,12 +11,13 @@
     "autoload-dev": {
         "psr-4": {
             "tests\\Libero\\ContentStore\\": "tests/",
-            "tests\\Libero\\JatsContentWorkflow\\": "vendor-extra/JatsContentWorkflow/tests/"
+            "tests\\Libero\\JatsContentWorkflowBundle\\": "vendor-extra/JatsContentWorkflowBundle/tests/"
         }
     },
     "require": {
         "php": "^7.3",
         "ext-ctype": "*",
+        "ext-intl": "*",
         "ext-mbstring": "*",
         "ext-pdo_pgsql": "*",
         "aws/aws-sdk-php-symfony": "^2.0",
@@ -26,7 +27,7 @@
         "league/flysystem-aws-s3-v3": "^1.0",
         "libero/api-problem-bundle": "^0.2",
         "libero/content-api-bundle": "^0.1",
-        "libero/jats-content-workflow": "^1.0@dev",
+        "libero/jats-content-workflow-bundle": "^1.0@dev",
         "oneup/flysystem-bundle": "^3.1",
         "symfony/config": "^4.2",
         "symfony/console": "^4.2",
@@ -61,6 +62,7 @@
     },
     "replace": {
         "symfony/polyfill-ctype": "*",
+        "symfony/polyfill-intl-messageformatter": "*",
         "symfony/polyfill-mbstring": "*",
         "symfony/polyfill-php72": "*"
     },

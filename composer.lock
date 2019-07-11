@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b3e907e177813df1758aaf60a75297d0",
+    "content-hash": "22c247ae477b3992852a0f768b07bcf0",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -1862,12 +1862,12 @@
             "time": "2019-05-02T12:14:20+00:00"
         },
         {
-            "name": "libero/jats-content-workflow",
+            "name": "libero/jats-content-workflow-bundle",
             "version": "dev-master",
             "dist": {
                 "type": "path",
-                "url": "./vendor-extra/JatsContentWorkflow",
-                "reference": "d4aeba6abca38367dc43128493815a89a1333ee8"
+                "url": "./vendor-extra/JatsContentWorkflowBundle",
+                "reference": "4b4f426fd91ba3b4a20ff851771b184bf8f321fb"
             },
             "require": {
                 "fluentdom/fluentdom": "^7.0",
@@ -1875,14 +1875,18 @@
                 "guzzlehttp/promises": "^1.3",
                 "guzzlehttp/psr7": "^1.5",
                 "league/flysystem": "^1.0",
+                "libero/api-problem-bundle": "^0.2",
                 "libero/content-api-bundle": "^0.1",
                 "libero/media-type": "^0.1",
                 "php": "^7.2",
                 "psr/http-message": "^1.0",
                 "symfony/http-foundation": "^4.2",
+                "symfony/http-kernel": "^4.2",
+                "symfony/polyfill-intl-messageformatter": "^1.10",
+                "symfony/translation-contracts": "^1.1",
                 "symfony/workflow": "^4.2"
             },
-            "type": "library",
+            "type": "symfony-bundle",
             "extra": {
                 "branch-alias": {
                     "dev-master": "1.0.x-dev"
@@ -1893,13 +1897,13 @@
                     "src/functions.php"
                 ],
                 "psr-4": {
-                    "Libero\\JatsContentWorkflow\\": "src/"
+                    "Libero\\JatsContentWorkflowBundle\\": "src/"
                 }
             },
             "license": [
                 "MIT"
             ],
-            "description": "JATS content workflow"
+            "description": "JATS content workflow bundle"
         },
         {
             "name": "libero/media-type",
@@ -2836,36 +2840,45 @@
         },
         {
             "name": "symfony/contracts",
-            "version": "v1.0.2",
+            "version": "v1.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/contracts.git",
-                "reference": "1aa7ab2429c3d594dd70689604b5cf7421254cdf"
+                "reference": "3f3f796d5f24a098a9da62828b8daa1b11494c1b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/contracts/zipball/1aa7ab2429c3d594dd70689604b5cf7421254cdf",
-                "reference": "1aa7ab2429c3d594dd70689604b5cf7421254cdf",
+                "url": "https://api.github.com/repos/symfony/contracts/zipball/3f3f796d5f24a098a9da62828b8daa1b11494c1b",
+                "reference": "3f3f796d5f24a098a9da62828b8daa1b11494c1b",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.1.3"
-            },
-            "require-dev": {
+                "php": "^7.1.3",
                 "psr/cache": "^1.0",
                 "psr/container": "^1.0"
             },
+            "replace": {
+                "symfony/cache-contracts": "self.version",
+                "symfony/event-dispatcher-contracts": "self.version",
+                "symfony/http-client-contracts": "self.version",
+                "symfony/service-contracts": "self.version",
+                "symfony/translation-contracts": "self.version"
+            },
+            "require-dev": {
+                "symfony/polyfill-intl-idn": "^1.10"
+            },
             "suggest": {
-                "psr/cache": "When using the Cache contracts",
-                "psr/container": "When using the Service contracts",
-                "symfony/cache-contracts-implementation": "",
-                "symfony/service-contracts-implementation": "",
-                "symfony/translation-contracts-implementation": ""
+                "psr/event-dispatcher": "When using the EventDispatcher contracts",
+                "symfony/cache-implementation": "",
+                "symfony/event-dispatcher-implementation": "",
+                "symfony/http-client-implementation": "",
+                "symfony/service-implementation": "",
+                "symfony/translation-implementation": ""
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.0-dev"
+                    "dev-master": "1.1-dev"
                 }
             },
             "autoload": {
@@ -2900,7 +2913,7 @@
                 "interoperability",
                 "standards"
             ],
-            "time": "2018-12-05T08:06:11+00:00"
+            "time": "2019-06-20T06:46:26+00:00"
         },
         {
             "name": "symfony/debug",
@@ -7428,7 +7441,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "libero/jats-content-workflow": 20,
+        "libero/jats-content-workflow-bundle": 20,
         "thomasweinert/phpunit-xpath-assertions": 20
     },
     "prefer-stable": false,
@@ -7436,6 +7449,7 @@
     "platform": {
         "php": "^7.3",
         "ext-ctype": "*",
+        "ext-intl": "*",
         "ext-mbstring": "*",
         "ext-pdo_pgsql": "*"
     },

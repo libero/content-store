@@ -12,7 +12,7 @@ services:
         resource: '../src/*'
         exclude: '../src/{Kernel.php}'
 
-    Libero\JatsContentWorkflow\Workflow\MoveJatsAssets:
+    Libero\JatsContentWorkflowBundle\Workflow\MoveJatsAssets:
         arguments:
             - '%env(ASSETS_ORIGIN_WHITELIST)%'
             - '%env(ASSETS_PUBLIC_URI)%'

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xliff xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2"
+    xmlns="urn:oasis:names:tc:xliff:document:1.2"
+    xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 http://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd">
+
+    <file source-language="en" datatype="plaintext" original="file.ext">
+
+        <body>
+
+            <trans-unit id="1" resname="libero.jats_content_workflow.asset.deploy_failed.title">
+                <source>Failed to deploy asset</source>
+            </trans-unit>
+
+            <trans-unit id="2" resname="libero.jats_content_workflow.asset.deploy_failed.details">
+                <source>Failed to deploy {asset} to {target}.</source>
+            </trans-unit>
+
+            <trans-unit id="3" resname="libero.jats_content_workflow.asset.load_failed.title">
+                <source>Failed to load asset</source>
+            </trans-unit>
+
+            <trans-unit id="4" resname="libero.jats_content_workflow.asset.load_failed.details">
+                <source>Failed to load {asset} due to "{reason}".</source>
+            </trans-unit>
+
+            <trans-unit id="5" resname="libero.jats_content_workflow.content_type.invalid.title">
+                <source>Invalid Content-Type</source>
+            </trans-unit>
+
+            <trans-unit id="6" resname="libero.jats_content_workflow.content_type.invalid.details">
+                <source>"{content_type}" from {uri} is an invalid Content-Type.</source>
+            </trans-unit>
+
+            <trans-unit id="7" resname="libero.jats_content_workflow.content_type.unknown.title">
+                <source>Unknown Content-Type</source>
+            </trans-unit>
+
+            <trans-unit id="8" resname="libero.jats_content_workflow.content_type.unknown.details">
+                <source>{uri} does not have a Content-Type.</source>
+            </trans-unit>
+
+        </body>
+
+    </file>
+
+</xliff>

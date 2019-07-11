@@ -33,9 +33,11 @@ RUN apk add --no-cache --virtual .build-deps \
         postgresql-dev \
     && \
     apk add --no-cache \
+        icu-dev \
         libpq \
     && \
     docker-php-ext-install \
+        intl \
         opcache \
         pdo_pgsql \
     && \
